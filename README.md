@@ -12,7 +12,7 @@ How to run the server
 To launch the web server, run src/network/ServerApplication.java as "Java application." 
 The server reads options from the file "app.config" and from the command line. The default 
 port is 8080. When the server is running, browse to 
-  http://localhost:8080/fimmwidget.html
+  [localhost](http://localhost:8080/fimmwidget.html).
 
 The code depends on the following jar files:
   * VarioML.jar"
