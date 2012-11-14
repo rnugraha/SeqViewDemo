@@ -163,7 +163,6 @@ FimmWidgets.util = {};        // For utility functions.
     var defaultFiles = [
       "extjs/css/ext-all.css", 
       "extjs/js/ext-all.js", 
-      "fimmwidget.js", 
       "extjs/css/shared/example.css"
     ];
     var files = defaultFiles;
