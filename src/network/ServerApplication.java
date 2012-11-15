@@ -13,7 +13,7 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import app.AppProperties;
 import database.DatabaseConfig;
 import database.DatabaseConnectionException;
-import database.GeneNameDatabase;
+import database.GeneNameDatabaseInterface;
 import database.GeneNameDatabaseMongoDB;
 import database.VariantDatabaseInterface;
 import database.VariantDatabaseMongoDB;
@@ -57,7 +57,7 @@ public class ServerApplication {
                             .set("collection", "variants"));
             variantHandler.setDatabase(variantDb);
 
-            GeneNameDatabase geneDb = 
+            GeneNameDatabaseInterface geneDb = 
                 new GeneNameDatabaseMongoDB(
                         new DatabaseConfig()
                             .set("host", "localhost")

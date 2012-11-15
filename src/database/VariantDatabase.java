@@ -19,6 +19,6 @@ abstract public class VariantDatabase implements VariantDatabaseInterface {
     abstract public void closeConnection();
 
     @Override
-    abstract public void setGeneNameDatabase(GeneNameDatabase geneDb);
+    abstract public void setGeneNameDatabase(GeneNameDatabaseInterface geneDb);
     
 }
