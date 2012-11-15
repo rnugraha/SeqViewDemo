@@ -11,12 +11,12 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-public class VariantDatabaseMongoDB extends VariantDatabase {
+public class VariantDatabaseMongoDB implements VariantDatabaseInterface {
 
     public VariantDatabaseMongoDB(DatabaseConfig config) 
            throws DatabaseConnectionException {
         
-        super(config);
+        super();
         this.connection = new MongoDatabaseConnection(config);
         this.collection = this.connection.getCollection();
         
