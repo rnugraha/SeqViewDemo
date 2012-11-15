@@ -108,7 +108,7 @@ public class VariantDatabaseMongoDB implements VariantDatabase {
     }   
 
     @Override
-    public void setGeneNameDatabase(GeneNameDatabaseInterface geneDb) {
+    public void setGeneNameDatabase(GeneNameDatabase geneDb) {
         this.geneDb = geneDb;
     }
     
@@ -123,6 +123,6 @@ public class VariantDatabaseMongoDB implements VariantDatabase {
     //private DB database;
     private final DBCollection collection;
     
-    private GeneNameDatabaseInterface geneDb;
+    private GeneNameDatabase geneDb;
 
 }

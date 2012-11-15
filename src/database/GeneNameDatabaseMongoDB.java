@@ -10,7 +10,7 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
 
-public class GeneNameDatabaseMongoDB implements GeneNameDatabaseInterface {
+public class GeneNameDatabaseMongoDB implements GeneNameDatabase {
 
     public GeneNameDatabaseMongoDB(DatabaseConfig config) 
             throws DatabaseConnectionException {

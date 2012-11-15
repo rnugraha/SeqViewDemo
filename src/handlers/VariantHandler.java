@@ -21,7 +21,7 @@ import org.varioml.jaxb.Variant;
 import org.varioml.util.Util;
 
 import database.DatabaseQueryResult;
-import database.GeneNameDatabaseInterface;
+import database.GeneNameDatabase;
 import database.HgncData;
 import database.VariantDatabase;
 
@@ -41,7 +41,7 @@ public class VariantHandler extends BaseHandler {
         this.db = db;
     }
     
-    public void setGeneNameDatabase(GeneNameDatabaseInterface geneDb) {
+    public void setGeneNameDatabase(GeneNameDatabase geneDb) {
         this.geneDb = geneDb;
         this.db.setGeneNameDatabase(geneDb);
     }
@@ -188,7 +188,7 @@ public class VariantHandler extends BaseHandler {
     }
     
     private VariantDatabase db;
-    private GeneNameDatabaseInterface geneDb;
+    private GeneNameDatabase geneDb;
 
     static private Pattern pattern = Pattern.compile("^/variants");
     

@@ -12,6 +12,6 @@ public interface VariantDatabase {
 
     abstract public void closeConnection();
 
-    abstract public void setGeneNameDatabase(GeneNameDatabaseInterface geneDb);
+    abstract public void setGeneNameDatabase(GeneNameDatabase geneDb);
 
 }

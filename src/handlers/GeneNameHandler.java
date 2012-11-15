@@ -14,7 +14,7 @@ import org.eclipse.jetty.http.HttpMethods;
 import org.eclipse.jetty.server.Request;
 
 import database.DatabaseQueryResult;
-import database.GeneNameDatabaseInterface;
+import database.GeneNameDatabase;
 
 public class GeneNameHandler extends BaseHandler {
 
@@ -107,7 +107,7 @@ public class GeneNameHandler extends BaseHandler {
         }
     }
     
-    public void setDatabase(GeneNameDatabaseInterface db) {
+    public void setDatabase(GeneNameDatabase db) {
         this.db = db;
     }
     
@@ -128,7 +128,7 @@ public class GeneNameHandler extends BaseHandler {
         return param.trim();
     }
     
-    private GeneNameDatabaseInterface db;
+    private GeneNameDatabase db;
     private static Pattern filterPattern = Pattern.compile("^\\[\\{\"property\":\"name\",\"value\":\"([^\"]+)\"\\}\\]$");
     
 }
