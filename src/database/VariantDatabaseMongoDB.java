@@ -11,7 +11,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-public class VariantDatabaseMongoDB implements VariantDatabaseInterface {
+public class VariantDatabaseMongoDB implements VariantDatabase {
 
     public VariantDatabaseMongoDB(DatabaseConfig config) 
            throws DatabaseConnectionException {
