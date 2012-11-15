@@ -23,7 +23,7 @@ import org.varioml.util.Util;
 import database.DatabaseQueryResult;
 import database.GeneNameDatabase;
 import database.HgncData;
-import database.VariantDatabase;
+import database.VariantDatabaseInterface;
 
 public class VariantHandler extends BaseHandler {
 
@@ -32,12 +32,12 @@ public class VariantHandler extends BaseHandler {
         geneDb = null;
     }
     
-    public VariantHandler(VariantDatabase db) {
+    public VariantHandler(VariantDatabaseInterface db) {
         super();
         this.db = db;
     }
     
-    public void setDatabase(VariantDatabase db) {
+    public void setDatabase(VariantDatabaseInterface db) {
         this.db = db;
     }
     
@@ -187,7 +187,7 @@ public class VariantHandler extends BaseHandler {
         
     }
     
-    private VariantDatabase db;
+    private VariantDatabaseInterface db;
     private GeneNameDatabase geneDb;
 
     static private Pattern pattern = Pattern.compile("^/variants");

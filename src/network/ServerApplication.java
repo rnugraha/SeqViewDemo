@@ -15,7 +15,7 @@ import database.DatabaseConfig;
 import database.DatabaseConnectionException;
 import database.GeneNameDatabase;
 import database.GeneNameDatabaseMongoDB;
-import database.VariantDatabase;
+import database.VariantDatabaseInterface;
 import database.VariantDatabaseMongoDB;
 
 public class ServerApplication {
@@ -49,7 +49,7 @@ public class ServerApplication {
         
         try {
             
-            VariantDatabase variantDb = 
+            VariantDatabaseInterface variantDb = 
                 new VariantDatabaseMongoDB(
                         new DatabaseConfig()
                             .set("host", "localhost")
