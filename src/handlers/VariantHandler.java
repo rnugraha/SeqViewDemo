@@ -132,7 +132,7 @@ public class VariantHandler extends BaseHandler {
                 String json = String.format(JSON_STRING_PATTERN, 
                                             count, 
                                             util.toJSONString(variants));
-                System.err.println(json);
+//                System.err.println(json);
                 sendString(json, MimeType.JSON, baseRequest, request, response);
                 return;
                 
