@@ -10,12 +10,12 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
 
-public class GeneNameDatabaseMongoDB extends GeneNameDatabase {
+public class GeneNameDatabaseMongoDB implements GeneNameDatabaseInterface {
 
     public GeneNameDatabaseMongoDB(DatabaseConfig config) 
             throws DatabaseConnectionException {
         
-        super(config);
+        super();
         this.connection = new MongoDatabaseConnection(config);
         this.collection = this.connection.getCollection();
         
