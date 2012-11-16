@@ -1,6 +1,20 @@
 package database;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
  * This class implements an in-memory database for gene names.
@@ -17,6 +31,11 @@ import java.io.File;
 
 public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     
+    public static void main(String[] args) {
+        GeneNameDatabaseInMemory db = new GeneNameDatabaseInMemory();
+        System.err.println(db.getHgncData("A1BG"));
+    }
+    
     public GeneNameDatabaseInMemory() {
         this(DEFAULT_HGNC_DATA);
     }
@@ -30,18 +49,68 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         if (source.isDirectory() || !source.exists()) {
             source = new File(DEFAULT_HGNC_DATA);
         }
+        sourceIsRead = false;
     }
 
     @Override
     public DatabaseQueryResult getGeneNamesAndSymbols(String filterName) {
-        // TODO Auto-generated method stub
+        if (sourceIsRead == false) {
+            initdb();
+        }
         return null;
     }
 
     @Override
     public HgncData getHgncData(String symbol) {
-        
-        return null;
+        HgncData hgnc = null;
+        if (sourceIsRead == false) {
+            initdb();
+        }
+        final String fmt = "SELECT * FROM cluster:%s WHERE approved_symbol = ?";
+        String sql = String.format(fmt, CLUSTER_NAME);
+        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
+        List<ODocument> result = database.command(query).execute(symbol);
+        if (result.size() > 0) {
+            ODocument doc = result.get(0);
+            hgnc = new HgncData(doc2map(doc));
+        }
+        return hgnc;
+    }
+    
+    private Map<String, Object> doc2map(ODocument doc) {
+        String[] properties = doc.fieldNames();
+        HashMap<String, Object> map = new HashMap<String, Object>(properties.length);
+        for (int i = 0; i < properties.length; ++i) {
+            String p = properties[i];
+            map.put(p, doc.field(p));
+        }
+        return map;
+    }
+    
+    private void initdb() {
+        database = new ODatabaseDocumentTx(DATABASE_NAME).create();
+        database.addCluster(CLUSTER_NAME, OStorage.CLUSTER_TYPE.MEMORY);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            @SuppressWarnings("unchecked")
+            ArrayList<Map<String,?>> objects = mapper.readValue(source, ArrayList.class);
+            int size = objects.size();
+            for (int i = 0; i < size; ++i) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> o = (Map<String, Object>) objects.get(i);
+                database.save(new ODocument(o), CLUSTER_NAME);
+            }
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+            return;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        sourceIsRead = true;
     }
     
     private static String abspath(String filename) {
@@ -52,7 +121,12 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     private static final String SEPARATOR = System.getProperty("file.separator");
     private static final String DEFAULT_HGNC_DATA;
     
+    private static final String DATABASE_NAME = "memory:hgnc";
+    private static final String CLUSTER_NAME = "hgnc";
+    
     private File source;
+    private boolean sourceIsRead;
+    private ODatabaseDocumentTx database;
     
     static {
         DEFAULT_HGNC_DATA = abspath("genedata/hgnc_genes.json");
