@@ -37,7 +37,7 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     public static void main(String[] args) {
         GeneNameDatabaseInMemory db = new GeneNameDatabaseInMemory();
 //        System.err.println(db.getHgncData("A1BG"));
-        DatabaseQueryResult results = db.getGeneNamesAndSymbols("A1B");
+        DatabaseQueryResult results = db.getGeneNamesAndSymbols("E3");
         System.err.println(results.get("symbols"));
         System.err.println(results.get("names"));
     }
@@ -63,11 +63,18 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         if (sourceIsRead == false) {
             initdb();
         }
+        
         DatabaseQueryResult results = new DatabaseQueryResult();
         ArrayList<String> geneSymbols = new ArrayList<String>();
         ArrayList<String> geneNames = new ArrayList<String>();
         results.set("symbols", geneSymbols);
         results.set("names", geneNames);
+        
+        // Prevent possible SQL injections.
+        if (sqlInjectionResistant(filterName) == false) {
+            return results;
+        }
+        
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM cluster:%s");
         sb.append(' ');
@@ -76,6 +83,7 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         sb.append("or approved_name like '%%%s%%'");
         String fmt = sb.toString();
         String sql = String.format(fmt, CLUSTER_NAME, filterName, filterName);
+        
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> result = database.command(query).execute();
         for (Iterator<ODocument> it = result.iterator(); it.hasNext();) {
@@ -111,6 +119,11 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
             map.put(p, doc.field(p));
         }
         return map;
+    }
+    
+    private boolean sqlInjectionResistant(String s) {
+        String pattern = "^[A-Za-z0-9- (),]+$";
+        return s.matches(pattern);
     }
     
     private void initdb() {
