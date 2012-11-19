@@ -29,4 +29,6 @@ The code depends on the following jar files:
   * mongo-2.8.0.jar"
   * mongo-jackson-mapper-1.4.2.jar"
   * servlet-api-2.5.jar"
+  * orient-commons-1.2.0.jar
+  * orientdb-core-1.2.0.jar
 
