@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,10 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     
     public static void main(String[] args) {
         GeneNameDatabaseInMemory db = new GeneNameDatabaseInMemory();
-        System.err.println(db.getHgncData("A1BG"));
+//        System.err.println(db.getHgncData("A1BG"));
+        DatabaseQueryResult results = db.getGeneNamesAndSymbols("A1B");
+        System.err.println(results.get("symbols"));
+        System.err.println(results.get("names"));
     }
     
     public GeneNameDatabaseInMemory() {
@@ -57,7 +61,27 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         if (sourceIsRead == false) {
             initdb();
         }
-        return null;
+        DatabaseQueryResult results = new DatabaseQueryResult();
+        ArrayList<String> geneSymbols = new ArrayList<String>();
+        ArrayList<String> geneNames = new ArrayList<String>();
+        results.set("symbols", geneSymbols);
+        results.set("names", geneNames);
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM cluster:%s");
+        sb.append(' ');
+        sb.append("WHERE approved_symbol like '%%%s%%'");
+        sb.append(' ');
+        sb.append("or approved_name like '%%%s%%'");
+        String fmt = sb.toString();
+        String sql = String.format(fmt, CLUSTER_NAME, filterName, filterName);
+        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
+        List<ODocument> result = database.command(query).execute();
+        for (Iterator it = result.iterator(); it.hasNext();) {
+            ODocument d = (ODocument) it.next();
+            geneSymbols.add((String) d.field("approved_symbol"));
+            geneNames.add((String) d.field("approved_name"));
+        }
+        return results;
     }
 
     @Override
