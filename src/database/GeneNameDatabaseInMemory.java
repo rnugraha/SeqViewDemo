@@ -78,8 +78,8 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         String sql = String.format(fmt, CLUSTER_NAME, filterName, filterName);
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> result = database.command(query).execute();
-        for (Iterator it = result.iterator(); it.hasNext();) {
-            ODocument d = (ODocument) it.next();
+        for (Iterator<ODocument> it = result.iterator(); it.hasNext();) {
+            ODocument d = it.next();
             geneSymbols.add((String) d.field("approved_symbol"));
             geneNames.add((String) d.field("approved_name"));
         }
