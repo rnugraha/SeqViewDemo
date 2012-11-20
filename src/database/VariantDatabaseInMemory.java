@@ -1,15 +1,13 @@
 package database;
 
-public class VariantDatabaseInMemory implements VariantDatabase {
+public class VariantDatabaseInMemory extends VariantDabaseCommon {
 
     public VariantDatabaseInMemory(GeneNameDatabase geneDb) {
         super();
-        this.geneDb = geneDb;
     }
 
     public VariantDatabaseInMemory() {
         super();
-        geneDb = null;
     }
 
     @Override
@@ -30,10 +28,4 @@ public class VariantDatabaseInMemory implements VariantDatabase {
         return null;
     }
 
-    @Override
-    public void setGeneNameDatabase(GeneNameDatabase geneDb) {
-        this.geneDb = geneDb;
-    }
-
-    private GeneNameDatabase geneDb;
 }
