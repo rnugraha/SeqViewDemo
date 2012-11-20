@@ -2,6 +2,11 @@ package database;
 
 public class VariantDatabaseInMemory implements VariantDatabase {
 
+    public VariantDatabaseInMemory(GeneNameDatabase geneDb) {
+        super();
+        this.geneDb = geneDb;
+    }
+
     public VariantDatabaseInMemory() {
         super();
         geneDb = null;
