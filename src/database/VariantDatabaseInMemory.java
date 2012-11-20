@@ -3,7 +3,7 @@ package database;
 public class VariantDatabaseInMemory extends VariantDabaseCommon {
 
     public VariantDatabaseInMemory(GeneNameDatabase geneDb) {
-        super();
+        super(geneDb);
     }
 
     public VariantDatabaseInMemory() {

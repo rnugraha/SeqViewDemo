@@ -2,6 +2,11 @@ package database;
 
 public abstract class VariantDabaseCommon implements VariantDatabase {
 
+    public VariantDabaseCommon(GeneNameDatabase geneDb) {
+        super();
+        this.geneDb = geneDb;
+    }
+
     public VariantDabaseCommon() {
         super();
     }
