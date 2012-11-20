@@ -9,6 +9,7 @@ public abstract class VariantDabaseCommon implements VariantDatabase {
 
     public VariantDabaseCommon() {
         super();
+        geneDb = null;
     }
 
     @Override
