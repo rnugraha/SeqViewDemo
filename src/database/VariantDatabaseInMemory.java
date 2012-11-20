@@ -1,8 +1,17 @@
 package database;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
  * This class implements an in-memory database for gene variants.
@@ -21,31 +30,63 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 public class VariantDatabaseInMemory extends VariantDabaseCommon {
 
-    public VariantDatabaseInMemory(GeneNameDatabase geneDb) {
-        super(geneDb);
+    public VariantDatabaseInMemory(String src) {
+        super();
+        source = new File(src);
+        if (source.isDirectory() || !source.exists() || !source.canRead()) {
+            source = new File(DEFAULT_VARIANT_DATA);
+        }
+        dbInMemory = false;
     }
 
     public VariantDatabaseInMemory() {
-        super();
+        this(DEFAULT_VARIANT_DATA);
     }
     
-    // Initializer block
-    {
-        sourceIsRead = false;
-    }
-
     @Override
     public DatabaseQueryResult getVariantById(String id) {
-        // TODO Auto-generated method stub
+        if (dbInMemory == false) {
+            initdb();
+        }
+        
         return null;
     }
 
     @Override
     public DatabaseQueryResult getVariantsData(String gene, int skip, int limit) {
-        // TODO Auto-generated method stub
+        if (dbInMemory == false) {
+            initdb();
+        }
+        
         return null;
     }
 
+    private void initdb() {
+        database = new ODatabaseDocumentTx(DATABASE_NAME).create();
+        database.addCluster(CLUSTER_NAME, OStorage.CLUSTER_TYPE.MEMORY);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            @SuppressWarnings("unchecked")
+            ArrayList<Map<String,?>> objects = mapper.readValue(source, ArrayList.class);
+            int size = objects.size();
+            for (int i = 0; i < size; ++i) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> o = (Map<String, Object>) objects.get(i);
+                database.save(new ODocument(o), CLUSTER_NAME);
+            }
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+            return;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        dbInMemory = true;
+    }
+    
     private static String abspath(String filename) {
         return HOMEDIR.concat(SEPARATOR).concat(filename);
     }
@@ -58,7 +99,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     private static final String CLUSTER_NAME = "variants";
     
     private File source;
-    private boolean sourceIsRead;
+    private boolean dbInMemory;
     private ODatabaseDocumentTx database;
     
     static {
