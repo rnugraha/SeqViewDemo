@@ -13,6 +13,17 @@ public class AppProperties {
     public AppProperties() {
         super();
     }
+    
+    /**
+     * A property exists if it has been set, or in case of 
+     * a value-less property, if it has been seen.
+     * 
+     * @param property  Property name to check.
+     * @return          true, if property has been set or seen.
+     */
+    public boolean exists(String property) {
+        return properties.containsKey(property);
+    }
 
     public String get(String property) {
         return properties.getProperty(property);
