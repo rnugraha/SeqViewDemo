@@ -8,6 +8,7 @@ import java.util.Map;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.varioml.jaxb.Variant;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -54,13 +55,28 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
 
     @Override
     public DatabaseQueryResult getVariantsData(String gene, int skip, int limit) {
+        final String COUNT_PROPERTY = "total_count";
+        final String VARIANTS_PROPERTY = "variants";
+        
+        skip = (skip < 0 ? DEFAULT_SKIP : skip);
+        limit = (limit < 0 ? DEFAULT_LIMIT : limit);
+        
         if (dbInMemory == false) {
             initdb();
+
+            if (dbInMemory == false) {
+                // For some reason, we cannot open the database.
+                // Return an empty query result.
+                DatabaseQueryResult empty = new DatabaseQueryResult();
+                empty.set(COUNT_PROPERTY, new Long(0));
+                empty.set(VARIANTS_PROPERTY, new ArrayList<Variant>());
+                return empty;
+            }
         }
         
         return null;
     }
-
+    
     private void initdb() {
         database = new ODatabaseDocumentTx(DATABASE_NAME).create();
         database.addCluster(CLUSTER_NAME, OStorage.CLUSTER_TYPE.MEMORY);
@@ -97,6 +113,9 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
     private static final String DATABASE_NAME = "memory:variants";
     private static final String CLUSTER_NAME = "variants";
+    
+    private static final int DEFAULT_SKIP = 0;
+    private static final int DEFAULT_LIMIT = 20;
     
     private File source;
     private boolean dbInMemory;
