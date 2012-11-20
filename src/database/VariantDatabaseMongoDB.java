@@ -11,7 +11,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-public class VariantDatabaseMongoDB implements VariantDatabase {
+public class VariantDatabaseMongoDB extends VariantDabaseCommon implements VariantDatabase {
 
     public VariantDatabaseMongoDB(DatabaseConfig config) 
            throws DatabaseConnectionException {
@@ -27,6 +27,11 @@ public class VariantDatabaseMongoDB implements VariantDatabase {
             @Override
             public void run() {
                 closeConnection();
+            }
+
+            private void closeConnection() {
+                // TODO Auto-generated method stub
+                
             }
         });
     }
@@ -44,14 +49,6 @@ public class VariantDatabaseMongoDB implements VariantDatabase {
     }
 
     @Override
-    public DatabaseQueryResult getHgncData(String gene) {
-        HgncData hgnc = geneDb.getHgncData(gene);
-        DatabaseQueryResult result = new DatabaseQueryResult();
-        result.set("hgnc", hgnc);
-        return result;
-    }
-
-    @Override
     public DatabaseQueryResult getVariantsData(String gene, int skip, int limit) {
         
         MongoUtil util = new MongoUtil();
@@ -59,6 +56,7 @@ public class VariantDatabaseMongoDB implements VariantDatabase {
         List<Variant> variants = new ArrayList<Variant>();
         DBCursor cursor = null;
         BasicDBObject query = new BasicDBObject();
+        GeneNameDatabase geneDb = getGeneNameDatabase();
         HgncData hgnc = geneDb.getHgncData(gene);
         
         query.put("genes.accession", gene);
@@ -107,21 +105,10 @@ public class VariantDatabaseMongoDB implements VariantDatabase {
         return results;
     }   
 
-    @Override
-    public void setGeneNameDatabase(GeneNameDatabase geneDb) {
-        this.geneDb = geneDb;
-    }
-    
-    public void closeConnection() {
-        ;       // Do nothing
-    }
-    
     private static final String ensemblUrl = "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=";
     
     private final MongoDatabaseConnection connection;
     //private DB database;
     private final DBCollection collection;
-    
-    private GeneNameDatabase geneDb;
 
 }
