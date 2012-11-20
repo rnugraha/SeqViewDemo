@@ -11,12 +11,6 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     }
 
     @Override
-    public DatabaseQueryResult getHgncData(String gene) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public DatabaseQueryResult getVariantById(String id) {
         // TODO Auto-generated method stub
         return null;
