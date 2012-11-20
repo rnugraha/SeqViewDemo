@@ -112,7 +112,6 @@ public class VariantDatabaseMongoDB implements VariantDatabase {
         this.geneDb = geneDb;
     }
     
-    @Override
     public void closeConnection() {
         ;       // Do nothing
     }

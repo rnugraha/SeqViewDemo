@@ -10,8 +10,6 @@ public interface VariantDatabase {
                                                         int skip,
                                                         int limit);
 
-    abstract public void closeConnection();
-
     abstract public void setGeneNameDatabase(GeneNameDatabase geneDb);
 
 }
