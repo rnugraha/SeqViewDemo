@@ -10,6 +10,15 @@ public class AppProperties {
     
     public static final String PORT = "port";
 
+    // The path to a json file from which we load gene names.
+    public static final String GENEDB = "genedb";
+
+    // The path to a json file from which we load variant data.
+    public static final String VARIANTDB = "variantdb";
+
+    // Use an in-memory, or embedded, database.
+    public static final String INMEMORY = "in-memory";
+
     public AppProperties() {
         super();
     }
