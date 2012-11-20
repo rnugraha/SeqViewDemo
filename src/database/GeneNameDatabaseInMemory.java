@@ -34,14 +34,6 @@ import com.orientechnologies.orient.core.storage.OStorage;
 
 public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     
-    public static void main(String[] args) {
-        GeneNameDatabaseInMemory db = new GeneNameDatabaseInMemory();
-//        System.err.println(db.getHgncData("A1BG"));
-        DatabaseQueryResult results = db.getGeneNamesAndSymbols("E3");
-        System.err.println(results.get("symbols"));
-        System.err.println(results.get("names"));
-    }
-    
     public GeneNameDatabaseInMemory() {
         this(DEFAULT_HGNC_DATA);
     }
