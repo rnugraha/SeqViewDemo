@@ -1,5 +1,9 @@
 package database;
 
+import java.io.File;
+
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+
 /**
  * This class implements an in-memory database for gene variants.
  * <p>The idea is to give users a chance to use a 
@@ -37,4 +41,22 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         return null;
     }
 
+    private static String abspath(String filename) {
+        return HOMEDIR.concat(SEPARATOR).concat(filename);
+    }
+
+    private static final String HOMEDIR = System.getProperty("user.dir");
+    private static final String SEPARATOR = System.getProperty("file.separator");
+    private static final String DEFAULT_VARIANT_DATA;
+    
+    private static final String DATABASE_NAME = "memory:variants";
+    private static final String CLUSTER_NAME = "variants";
+    
+    private File source;
+    private boolean sourceIsRead;
+    private ODatabaseDocumentTx database;
+    
+    static {
+        DEFAULT_VARIANT_DATA = abspath("genedata/variants.json");
+    }
 }
