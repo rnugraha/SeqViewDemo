@@ -2,6 +2,11 @@ package database;
 
 public class VariantDatabaseInMemory implements VariantDatabase {
 
+    public VariantDatabaseInMemory() {
+        super();
+        geneDb = null;
+    }
+
     @Override
     public DatabaseQueryResult getHgncData(String gene) {
         // TODO Auto-generated method stub
@@ -22,8 +27,8 @@ public class VariantDatabaseInMemory implements VariantDatabase {
 
     @Override
     public void setGeneNameDatabase(GeneNameDatabase geneDb) {
-        // TODO Auto-generated method stub
-
+        this.geneDb = geneDb;
     }
 
+    private GeneNameDatabase geneDb;
 }
