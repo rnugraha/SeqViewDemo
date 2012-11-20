@@ -28,6 +28,11 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     public VariantDatabaseInMemory() {
         super();
     }
+    
+    // Initializer block
+    {
+        sourceIsRead = false;
+    }
 
     @Override
     public DatabaseQueryResult getVariantById(String id) {
