@@ -34,8 +34,8 @@ import com.orientechnologies.orient.core.storage.OStorage;
 public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
     public static void main(String[] args) {
-        VariantDatabaseInMemory db = new VariantDatabaseInMemory();
-        db.getVariantsData("AGL", 0, 10);
+        VariantDatabaseInMemory db = new VariantDatabaseInMemory("/Users/pellonpe/tmp/variants.json");
+        db.getVariantsData("AGL", 100, 5);
     }
 
     public VariantDatabaseInMemory(String src) {
@@ -81,11 +81,16 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
                 return result;
             }
         }
-        String fmt = "SELECT * FROM cluster:%s WHERE accession = ? SKIP %d LIMIT %d";
-        String sql = String.format(fmt, CLUSTER_NAME, skip, limit);
+        System.err.println(database.countClusterElements(CLUSTER_NAME));
+        String fmt = "SELECT FROM cluster:%s WHERE genes contains(accession = %s) SKIP %d LIMIT %d";
+        String sql = String.format(fmt, CLUSTER_NAME, gene, skip, limit);
+        System.err.println(sql);
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> queryResult = database.command(query).execute(gene);
-        System.err.println(queryResult);
+        for (int i = 0; i < queryResult.size(); ++i) {
+            ODocument d = queryResult.get(i);
+            System.err.println(d.field("ref_seq"));
+        }
         return null;
     }
     
