@@ -7,33 +7,34 @@ public class SqlParameter {
     }
     
     public static boolean sqlInjectionResistant(String s, int mode) {
+        System.out.println("mode is " + mode);
         StringBuilder classes = new StringBuilder();
         
-        if ((mode & UPPERCASE) == 1) {
+        if ((mode & UPPERCASE) != 0) {
             classes.append("A-Z");
         }
-        if ((mode & LOWERCASE) == 1) {
+        if ((mode & LOWERCASE) != 0) {
             classes.append("a-z");
         }
-        if ((mode & NUMBERS) == 1) {
+        if ((mode & NUMBERS) != 0) {
             classes.append("0-9");
         }
-        if ((mode & HYPHEN) == 1) {
+        if ((mode & HYPHEN) != 0) {
             classes.append("\\-");
         }
-        if ((mode & SPACE) == 1) {
+        if ((mode & SPACE) != 0) {
             classes.append(" ");
         }
-        if ((mode & PARENTHESES) == 1) {
+        if ((mode & PARENTHESES) != 0) {
             classes.append("()");
         }
-        if ((mode & BRACKETS) == 1) {
+        if ((mode & BRACKETS) != 0) {
             classes.append("\\[\\]");
         }
-        if ((mode & BRACES) == 1) {
+        if ((mode & BRACES) != 0) {
             classes.append("{}");
         }
-        if ((mode & COMMA) == 1) {
+        if ((mode & COMMA) != 0) {
             classes.append(",");
         }
         
@@ -60,15 +61,15 @@ public class SqlParameter {
     static {
         int i = 1;
         
-        UPPERCASE           = i;
-        LOWERCASE           = (i << 1);
-        NUMBERS             = (i << 1);
-        HYPHEN              = (i << 1);
-        SPACE               = (i << 1);
-        PARENTHESES         = (i << 1);
-        BRACKETS            = (i << 1);
-        BRACES              = (i << 1);
-        COMMA               = (i << 1);
+        UPPERCASE           = i;        i <<= 1;
+        LOWERCASE           = i;        i <<= 1;
+        NUMBERS             = i;        i <<= 1;
+        HYPHEN              = i;        i <<= 1;
+        SPACE               = i;        i <<= 1;
+        PARENTHESES         = i;        i <<= 1;
+        BRACKETS            = i;        i <<= 1;
+        BRACES              = i;        i <<= 1;
+        COMMA               = i;        i <<= 1;
         
         ALPHABET            = UPPERCASE | LOWERCASE;
         ALPHANUMERIC        = UPPERCASE | LOWERCASE | NUMBERS;
