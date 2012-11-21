@@ -11,6 +11,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.varioml.jaxb.Variant;
 
+import security.SqlParameter;
+
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
@@ -92,6 +94,16 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
             System.err.println(d.field("ref_seq"));
         }
         return null;
+    }
+    
+    private boolean sqlInjectionResistant(String s) {
+        int mode = 0;
+        mode |= SqlParameter.ALPHANUMERIC;
+        mode |= SqlParameter.HYPHEN;
+        mode |= SqlParameter.SPACE;
+        mode |= SqlParameter.PARENTHESES;
+        mode |= SqlParameter.COMMA;
+        return SqlParameter.sqlInjectionResistant(s, mode);
     }
     
     private void initdb() {
