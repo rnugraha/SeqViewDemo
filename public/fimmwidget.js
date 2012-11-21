@@ -483,22 +483,6 @@ FimmWidgets.util = {};        // For utility functions.
 
     /*********** Stores **********/
 
-    Ext.define('VariantStore', {
-      extend: 'Ext.data.Store',
-      pageSize: 10,
-      model: 'Variant',
-      remoteSort: true,
-      proxy: {
-        type: 'ajax',
-        url: '/variants',
-        reader: {
-          root: 'variants',
-          totalProperty: 'totalCount'
-        },
-        simpleSortMode: false
-      }
-    });
-
     Ext.define('GeneNameStore', {
       extend:  'Ext.data.Store',
       model: 'GeneName',
