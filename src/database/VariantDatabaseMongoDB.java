@@ -64,7 +64,7 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
         try {
             cursor = this.collection.find(query);
             count = cursor.count();
-//            cursor = cursor.skip( skip ).limit( limit );
+            cursor = cursor.skip( skip ).limit( limit );
             while (cursor.hasNext()) {
                 DBObject dobj = cursor.next();
 
