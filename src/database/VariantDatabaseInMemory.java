@@ -37,7 +37,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
     public static void main(String[] args) {
         VariantDatabaseInMemory db = new VariantDatabaseInMemory("/Users/pellonpe/tmp/variants.json");
-        db.getVariantsData("AGL", 100, 5);
+        db.getVariantsData("AGL", 0, 1);
     }
 
     public VariantDatabaseInMemory(String src) {
@@ -92,15 +92,14 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
 
         String fmt = "SELECT FROM cluster:%s WHERE genes contains(accession = %s) SKIP %d LIMIT %d";
         String sql = String.format(fmt, CLUSTER_NAME, gene, skip, limit);
-        System.err.println(sql);
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> queryResult = database.command(query).execute(gene);
         result.set(COUNT_PROPERTY, queryResult.size());
         for (int i = 0; i < queryResult.size(); ++i) {
             ODocument d = queryResult.get(i);
-            System.err.println(d.field("ref_seq"));
+            System.err.println(d.toJSON());
         }
-        return null;
+        return result;
     }
     
     private boolean sqlInjectionResistant(String s) {
