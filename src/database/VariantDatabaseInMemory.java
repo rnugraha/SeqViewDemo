@@ -95,6 +95,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         System.err.println(sql);
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> queryResult = database.command(query).execute(gene);
+        result.set(COUNT_PROPERTY, queryResult.size());
         for (int i = 0; i < queryResult.size(); ++i) {
             ODocument d = queryResult.get(i);
             System.err.println(d.field("ref_seq"));
@@ -105,10 +106,10 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     private boolean sqlInjectionResistant(String s) {
         int mode = 0;
         mode |= SqlParameter.ALPHANUMERIC;
-        mode |= SqlParameter.HYPHEN;
-        mode |= SqlParameter.SPACE;
-        mode |= SqlParameter.PARENTHESES;
-        mode |= SqlParameter.COMMA;
+//        mode |= SqlParameter.HYPHEN;
+//        mode |= SqlParameter.SPACE;
+//        mode |= SqlParameter.PARENTHESES;
+//        mode |= SqlParameter.COMMA;
         return SqlParameter.sqlInjectionResistant(s, mode);
     }
     
