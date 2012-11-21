@@ -38,7 +38,6 @@ public class SqlParameter {
         }
         
         String pattern = String.format("^[%s]+$", classes.toString());
-        System.out.println(pattern);
         return s.matches(pattern);
     }
     
