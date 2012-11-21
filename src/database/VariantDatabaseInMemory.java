@@ -3,6 +3,7 @@ package database;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
@@ -12,6 +13,7 @@ import org.varioml.jaxb.Variant;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import com.orientechnologies.orient.core.storage.OStorage;
 
 /**
@@ -30,6 +32,10 @@ import com.orientechnologies.orient.core.storage.OStorage;
  */
 
 public class VariantDatabaseInMemory extends VariantDabaseCommon {
+    
+    public static void main(String[] args) {
+        VariantDatabaseInMemory db = new VariantDatabaseInMemory();
+    }
 
     public VariantDatabaseInMemory(String src) {
         super();
@@ -57,7 +63,11 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     public DatabaseQueryResult getVariantsData(String gene, int skip, int limit) {
         final String COUNT_PROPERTY = "total_count";
         final String VARIANTS_PROPERTY = "variants";
-        
+
+        DatabaseQueryResult result = new DatabaseQueryResult();
+        result.set(COUNT_PROPERTY, new Long(0));
+        result.set(VARIANTS_PROPERTY, new ArrayList<Variant>());
+
         skip = (skip < 0 ? DEFAULT_SKIP : skip);
         limit = (limit < 0 ? DEFAULT_LIMIT : limit);
         
@@ -67,13 +77,14 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
             if (dbInMemory == false) {
                 // For some reason, we cannot open the database.
                 // Return an empty query result.
-                DatabaseQueryResult empty = new DatabaseQueryResult();
-                empty.set(COUNT_PROPERTY, new Long(0));
-                empty.set(VARIANTS_PROPERTY, new ArrayList<Variant>());
-                return empty;
+                return result;
             }
         }
-        
+        String fmt = "SELECT * FROM cluster:%s WHERE accession = ? SKIP %d LIMIT %d";
+        String sql = String.format(fmt, CLUSTER_NAME, skip, limit);
+        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
+        List<ODocument> queryResult = database.command(query).execute(gene);
+        System.err.println(queryResult);
         return null;
     }
     
