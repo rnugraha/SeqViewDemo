@@ -2,11 +2,11 @@ package security;
 
 public class SqlParameter {
     
-    public boolean sqlInjectionResistant(String s) {
+    public static boolean sqlInjectionResistant(String s) {
         return sqlInjectionResistant(s, EVERYTHING);    
     }
     
-    public boolean sqlInjectionResistant(String s, int mode) {
+    public static boolean sqlInjectionResistant(String s, int mode) {
         StringBuilder classes = new StringBuilder();
         
         if ((mode & UPPERCASE) == 1) {
@@ -38,6 +38,7 @@ public class SqlParameter {
         }
         
         String pattern = String.format("^[%s]+$", classes.toString());
+        System.out.println(pattern);
         return s.matches(pattern);
     }
     
@@ -50,6 +51,9 @@ public class SqlParameter {
     public static final int BRACKETS;
     public static final int BRACES;
     public static final int COMMA;
+    
+    public static final int ALPHABET;
+    public static final int ALPHANUMERIC;
     
     public static final int EVERYTHING = Integer.MAX_VALUE;
     
@@ -65,5 +69,8 @@ public class SqlParameter {
         BRACKETS            = (i << 1);
         BRACES              = (i << 1);
         COMMA               = (i << 1);
+        
+        ALPHABET            = UPPERCASE | LOWERCASE;
+        ALPHANUMERIC        = UPPERCASE | LOWERCASE | NUMBERS;
     }
 }
