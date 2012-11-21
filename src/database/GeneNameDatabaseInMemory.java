@@ -12,6 +12,8 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import security.SqlParameter;
+
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
@@ -114,8 +116,13 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     }
     
     private boolean sqlInjectionResistant(String s) {
-        String pattern = "^[A-Za-z0-9- (),]+$";
-        return s.matches(pattern);
+        int mode = 0;
+        mode |= SqlParameter.ALPHANUMERIC;
+        mode |= SqlParameter.HYPHEN;
+        mode |= SqlParameter.SPACE;
+        mode |= SqlParameter.PARENTHESES;
+        mode |= SqlParameter.COMMA;
+        return SqlParameter.sqlInjectionResistant(s, mode);
     }
     
     private void initdb() {
