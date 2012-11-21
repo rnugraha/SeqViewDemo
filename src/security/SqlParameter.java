@@ -3,11 +3,41 @@ package security;
 public class SqlParameter {
     
     public boolean sqlInjectionResistant(String s) {
-        return sqlInjectionResistant(s, EVERYTHING);
+        return sqlInjectionResistant(s, EVERYTHING);    
     }
     
     public boolean sqlInjectionResistant(String s, int mode) {
-        String pattern = "^[A-Za-z0-9- (),]+$";
+        StringBuilder classes = new StringBuilder();
+        
+        if ((mode & UPPERCASE) == 1) {
+            classes.append("A-Z");
+        }
+        if ((mode & LOWERCASE) == 1) {
+            classes.append("a-z");
+        }
+        if ((mode & NUMBERS) == 1) {
+            classes.append("0-9");
+        }
+        if ((mode & HYPHEN) == 1) {
+            classes.append("\\-");
+        }
+        if ((mode & SPACE) == 1) {
+            classes.append(" ");
+        }
+        if ((mode & PARENTHESES) == 1) {
+            classes.append("()");
+        }
+        if ((mode & BRACKETS) == 1) {
+            classes.append("\\[\\]");
+        }
+        if ((mode & BRACES) == 1) {
+            classes.append("{}");
+        }
+        if ((mode & COMMA) == 1) {
+            classes.append(",");
+        }
+        
+        String pattern = String.format("^[%s]+$", classes.toString());
         return s.matches(pattern);
     }
     
