@@ -35,6 +35,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
     public static void main(String[] args) {
         VariantDatabaseInMemory db = new VariantDatabaseInMemory();
+        db.getVariantsData("AGL", 0, 10);
     }
 
     public VariantDatabaseInMemory(String src) {
