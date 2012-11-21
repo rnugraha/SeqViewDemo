@@ -7,7 +7,6 @@ public class SqlParameter {
     }
     
     public static boolean sqlInjectionResistant(String s, int mode) {
-        System.out.println("mode is " + mode);
         StringBuilder classes = new StringBuilder();
         
         if ((mode & UPPERCASE) != 0) {
