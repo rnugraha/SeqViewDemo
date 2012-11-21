@@ -83,7 +83,13 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
                 return result;
             }
         }
-        System.err.println(database.countClusterElements(CLUSTER_NAME));
+        
+        // Protect against SQL injections.
+        if (!sqlInjectionResistant(gene)) {
+            System.err.println("Possibly dangerous query parameter: '" + gene + "'");
+            return result;
+        }
+
         String fmt = "SELECT FROM cluster:%s WHERE genes contains(accession = %s) SKIP %d LIMIT %d";
         String sql = String.format(fmt, CLUSTER_NAME, gene, skip, limit);
         System.err.println(sql);
