@@ -105,6 +105,7 @@ public class StaticFileHandler extends BaseHandler {
         File d = new File(path);
         if (d.isDirectory() || d.canRead()) {
             wwwDir = d.getAbsolutePath();
+            accessControl.setDirectory(path);
         }
     }
     

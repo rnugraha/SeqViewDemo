@@ -9,6 +9,13 @@ public class FileAccessControl {
     public FileAccessControl(String rootPath) {
         this.rootDir = new File(rootPath);
     }
+    
+    public void setDirectory(String path) {
+        File d = new File(path);
+        if (d.isDirectory() || d.canRead()) {
+            rootDir = d;
+        }
+    }
 
     public int pathAccessStatus(String path) {
         URI u;
@@ -30,7 +37,7 @@ public class FileAccessControl {
         }
     }
     
-    private final File rootDir;
+    private File rootDir;
     
     public static final int ACCESS_ALLOWED = 0;
     public static final int ACCESS_DENIED = 1;
