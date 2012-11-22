@@ -10,10 +10,9 @@ public class FileAccessControl {
         this.rootDir = new File(rootPath);
     }
     
-    public void setDirectory(String path) {
-        File d = new File(path);
-        if (d.isDirectory() || d.canRead()) {
-            rootDir = d;
+    public void setDirectory(File dir) {
+        if (dir.isDirectory() || dir.canRead()) {
+            rootDir = dir;
         }
     }
 
