@@ -34,7 +34,8 @@ public class StaticFileHandler extends BaseHandler {
     public StaticFileHandler() {
         super();
         
-        accessControl = new FileAccessControl(PUBLIC_DIR);
+        wwwDir = DEFAULT_WWW_DIR;
+        accessControl = new FileAccessControl(DEFAULT_WWW_DIR);
     }
     
     /* ------------------------------------------------------------ */
@@ -82,7 +83,7 @@ public class StaticFileHandler extends BaseHandler {
             
             switch (accessControl.pathAccessStatus(path)) {
             case FileAccessControl.ACCESS_ALLOWED:
-                String fullPath = PUBLIC_DIR.concat(path);
+                String fullPath = wwwDir.concat(path);
                 File file = new File(fullPath);
                 String mime = getMimeType(request.getPathInfo());
                 sendFile(file, mime, baseRequest, request, response);
@@ -100,6 +101,13 @@ public class StaticFileHandler extends BaseHandler {
         }
     }
     
+    public void setDirectory(String path) {
+        File d = new File(path);
+        if (d.isDirectory() || d.canRead()) {
+            wwwDir = d.getAbsolutePath();
+        }
+    }
+    
     private String getMimeType(String path) {
         // As we are interested only in the suffix, there is 
         // no harm in converting the PATH to lowercase.
@@ -114,11 +122,13 @@ public class StaticFileHandler extends BaseHandler {
         }
         return DEFAULT_MIME;
     }
+    
+    private String wwwDir;
 
     private final FileAccessControl accessControl;
     
     // Directory we will be serving the files from.
-    private static final String PUBLIC_DIR = 
+    private static final String DEFAULT_WWW_DIR = 
             System.getProperty("user.dir")
                   .concat(System.getProperty("file.separator"))
                   .concat("public");
