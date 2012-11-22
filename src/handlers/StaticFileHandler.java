@@ -101,6 +101,13 @@ public class StaticFileHandler extends BaseHandler {
         }
     }
     
+    public void setDirectory(String path) {
+        File d = new File(path);
+        if (d.isDirectory() || d.canRead()) {
+            wwwDir = d.getAbsolutePath();
+        }
+    }
+    
     private String getMimeType(String path) {
         // As we are interested only in the suffix, there is 
         // no harm in converting the PATH to lowercase.
@@ -116,7 +123,7 @@ public class StaticFileHandler extends BaseHandler {
         return DEFAULT_MIME;
     }
     
-    private final String wwwDir;
+    private String wwwDir;
 
     private final FileAccessControl accessControl;
     
