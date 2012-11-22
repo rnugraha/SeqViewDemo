@@ -32,6 +32,9 @@ public class ServerApplication {
                     String key = arg.substring(0, index);
                     String value = arg.substring(index + 1);
                     config.set(key, value);
+                } else {
+                    // The argument does not take a value.
+                    config.set(arg, "");
                 }
             }
         }
