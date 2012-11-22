@@ -50,6 +50,11 @@ public class ServerApplication {
         GeneNameHandler geneHandler = new GeneNameHandler();
         NcbiHandler ncbiHandler = new NcbiHandler();
         
+        if (config.exists(AppProperties.WWWDIR)) {
+            String dir = config.get(AppProperties.WWWDIR);
+            staticHandler.setDirectory(dir);
+        }
+        
         try {
             
             VariantDatabase variantDb = 
