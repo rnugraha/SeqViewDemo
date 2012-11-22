@@ -34,6 +34,7 @@ public class StaticFileHandler extends BaseHandler {
     public StaticFileHandler() {
         super();
         
+        wwwDir = DEFAULT_WWW_DIR;
         accessControl = new FileAccessControl(DEFAULT_WWW_DIR);
     }
     
@@ -114,6 +115,8 @@ public class StaticFileHandler extends BaseHandler {
         }
         return DEFAULT_MIME;
     }
+    
+    private final String wwwDir;
 
     private final FileAccessControl accessControl;
     
