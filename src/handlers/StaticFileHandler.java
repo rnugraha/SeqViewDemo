@@ -83,7 +83,7 @@ public class StaticFileHandler extends BaseHandler {
             
             switch (accessControl.pathAccessStatus(path)) {
             case FileAccessControl.ACCESS_ALLOWED:
-                String fullPath = DEFAULT_WWW_DIR.concat(path);
+                String fullPath = wwwDir.concat(path);
                 File file = new File(fullPath);
                 String mime = getMimeType(request.getPathInfo());
                 sendFile(file, mime, baseRequest, request, response);

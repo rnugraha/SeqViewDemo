@@ -10,8 +10,28 @@ public class AppProperties {
     
     public static final String PORT = "port";
 
+    // The path to a json file from which we load gene names.
+    public static final String GENEDB = "genedb";
+
+    // The path to a json file from which we load variant data.
+    public static final String VARIANTDB = "variantdb";
+
+    // Use an in-memory, or embedded, database.
+    public static final String INMEMORY = "in-memory";
+
     public AppProperties() {
         super();
+    }
+    
+    /**
+     * A property exists if it has been set, or in case of 
+     * a value-less property, if it has been seen.
+     * 
+     * @param property  Property name to check.
+     * @return          true, if property has been set or seen.
+     */
+    public boolean exists(String property) {
+        return properties.containsKey(property);
     }
 
     public String get(String property) {
