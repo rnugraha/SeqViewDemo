@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="launch" name="Create Runnable Jar for Project jetty">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="launch">
+        <jar destfile="./seqviewdemo.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="network.ServerApplication"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="./bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/servlet-api-2.5.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/javax.servlet-api-3.0.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/jetty-all-7.6.5.v20120716.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/jackson-all-1.9.9.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/mongo-2.8.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/mongo-jackson-mapper-1.4.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/VarioML.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/commons-codec-1.6.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/commons-logging-1.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/fluent-hc-4.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/httpclient-4.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/httpclient-cache-4.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/httpcore-4.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/httpmime-4.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/orient-commons-1.2.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./jars/orientdb-core-1.2.0.jar"/>
+        </jar>
+    </target>
+</project>
