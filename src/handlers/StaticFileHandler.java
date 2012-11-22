@@ -34,7 +34,7 @@ public class StaticFileHandler extends BaseHandler {
     public StaticFileHandler() {
         super();
         
-        accessControl = new FileAccessControl(PUBLIC_DIR);
+        accessControl = new FileAccessControl(DEFAULT_WWW_DIR);
     }
     
     /* ------------------------------------------------------------ */
@@ -82,7 +82,7 @@ public class StaticFileHandler extends BaseHandler {
             
             switch (accessControl.pathAccessStatus(path)) {
             case FileAccessControl.ACCESS_ALLOWED:
-                String fullPath = PUBLIC_DIR.concat(path);
+                String fullPath = DEFAULT_WWW_DIR.concat(path);
                 File file = new File(fullPath);
                 String mime = getMimeType(request.getPathInfo());
                 sendFile(file, mime, baseRequest, request, response);
@@ -118,7 +118,7 @@ public class StaticFileHandler extends BaseHandler {
     private final FileAccessControl accessControl;
     
     // Directory we will be serving the files from.
-    private static final String PUBLIC_DIR = 
+    private static final String DEFAULT_WWW_DIR = 
             System.getProperty("user.dir")
                   .concat(System.getProperty("file.separator"))
                   .concat("public");
