@@ -2,19 +2,14 @@ package database;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
-import org.varioml.jaxb.Variant;
-import org.varioml.util.Util;
 
 import security.SqlParameter;
 
@@ -75,8 +70,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> queryResult = database.command(query).execute(id);
         if (queryResult.size() > 0) {
-            Variant v = doc2variant(queryResult.get(0));
-            result.set("variant", v);
+            result.set("variant", doc2map(queryResult.get(0)));
         }
         return result;
     }
@@ -88,7 +82,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
 
         DatabaseQueryResult result = new DatabaseQueryResult();
         result.set(COUNT_PROPERTY, new Long(0));
-        result.set(VARIANTS_PROPERTY, new ArrayList<Variant>());
+        result.set(VARIANTS_PROPERTY, new ArrayList<Map<String, Object>>());
 
         skip = (skip < 0 ? DEFAULT_SKIP : skip);
         limit = (limit < 0 ? DEFAULT_LIMIT : limit);
@@ -113,37 +107,23 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         String sql = String.format(fmt, CLUSTER_NAME, gene, skip, limit);
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> queryResult = database.command(query).execute(gene);
-        result.set(COUNT_PROPERTY, queryResult.size());
+        result.set(COUNT_PROPERTY, new Long(queryResult.size()));
         @SuppressWarnings("unchecked")
-        ArrayList<Variant> variants = (ArrayList<Variant>) result.get(VARIANTS_PROPERTY);
+        ArrayList<Map<String, Object>> variants = 
+            (ArrayList<Map<String, Object>>) result.get(VARIANTS_PROPERTY);
         for (int i = 0; i < queryResult.size(); ++i) {
-            ODocument d = queryResult.get(i);
-            variants.add(doc2variant(d));
+            variants.add(doc2map(queryResult.get(i)));
         }
         return result;
     }
     
-    @SuppressWarnings("unchecked")
-    private Variant doc2variant(ODocument d) {
-        @SuppressWarnings("rawtypes")
-        Class cls = Variant.class;
-        String json = d.toJSON();
-        AnnotationIntrospector ai1 = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector ai2 = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector ai = new AnnotationIntrospector.Pair(ai1, ai2);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.getDeserializationConfig().withAnnotationIntrospector(ai);
-        mapper.getSerializationConfig().withAnnotationIntrospector(ai);
-
-        Object o = null;
-        try {
-            StringReader in = new StringReader(json);
-            o = mapper.readValue(in, cls);
-            in.close();
-        } catch (Exception e) {
-            Util.fatal(Util.class, e);
+    private Map<String, Object> doc2map(ODocument d) {
+        String[] fields = d.fieldNames();
+        Map<String, Object> m = new HashMap<String, Object>();
+        for (String f : fields) {
+            m.put(f, d.field(f));
         }
-        return (Variant) o;
+        return m;
     }
     
     private boolean sqlInjectionResistant(String s) {
