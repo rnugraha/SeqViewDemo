@@ -40,14 +40,6 @@ import com.orientechnologies.orient.core.storage.OStorage;
 
 public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
-    public static void main(String[] args) {
-        VariantDatabaseInMemory db = new VariantDatabaseInMemory("/Users/pellonpe/tmp/variants.json");
-//        db.getVariantsData("AGL", 0, 1);
-        db.getVariantById("50710ffb0364faf736de5ce5");
-        db.getVariantById("50710ffb0364faf736de5ce7");
-        db.getVariantById("50710ffb0364faf736de5cef");
-    }
-
     public VariantDatabaseInMemory(String src) {
         super();
         source = new File(src);
