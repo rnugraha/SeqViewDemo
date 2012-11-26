@@ -74,8 +74,10 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         String sql = String.format(fmt, CLUSTER_NAME);
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> queryResult = database.command(query).execute(id);
-        System.err.println("Count: " + queryResult.size());
-//        result.set("variant", v);
+        if (queryResult.size() > 0) {
+            Variant v = doc2variant(queryResult.get(0));
+            result.set("variant", v);
+        }
         return result;
     }
 
