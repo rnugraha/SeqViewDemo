@@ -14,8 +14,10 @@ import app.AppProperties;
 import database.DatabaseConfig;
 import database.DatabaseConnectionException;
 import database.GeneNameDatabase;
+import database.GeneNameDatabaseInMemory;
 import database.GeneNameDatabaseMongoDB;
 import database.VariantDatabase;
+import database.VariantDatabaseInMemory;
 import database.VariantDatabaseMongoDB;
 
 public class ServerApplication {
@@ -50,30 +52,49 @@ public class ServerApplication {
         GeneNameHandler geneHandler = new GeneNameHandler();
         NcbiHandler ncbiHandler = new NcbiHandler();
         
-        try {
+        VariantDatabase variantDb = null;
+        GeneNameDatabase geneDb = null;
+        
+        if (config.exists(AppProperties.INMEMORY)) {
             
-            VariantDatabase variantDb = 
-                new VariantDatabaseMongoDB(
-                        new DatabaseConfig()
-                            .set("host", "localhost")
-                            .set("database", "variodb")
-                            .set("collection", "variants"));
-            variantHandler.setDatabase(variantDb);
+            String source = "";
+            if (config.exists(AppProperties.VARIANTDB)) {
+                source = config.get(AppProperties.VARIANTDB);
+            }
+            variantDb = new VariantDatabaseInMemory(source);
+            
+            source = "";
+            if (config.exists(AppProperties.VARIANTDB)) {
+                source = config.get(AppProperties.VARIANTDB);
+            }
+            geneDb = new GeneNameDatabaseInMemory(source);
+            
+        } else {
 
-            GeneNameDatabase geneDb = 
-                new GeneNameDatabaseMongoDB(
-                        new DatabaseConfig()
-                            .set("host", "localhost")
-                            .set("database", "variodb")
-                            .set("collection", "hgnc_genes"));
-            geneHandler.setDatabase(geneDb);
-            variantHandler.setGeneNameDatabase(geneDb);
-
-        } catch (DatabaseConnectionException e) {
-            System.err.println("Could not initialize the Mongo database.");
-            e.printStackTrace();
-            System.exit(1);
+            try {
+                variantDb = 
+                    new VariantDatabaseMongoDB(
+                            new DatabaseConfig()
+                                .set("host", "localhost")
+                                .set("database", "variodb")
+                                .set("collection", "variants"));
+                geneDb = 
+                    new GeneNameDatabaseMongoDB(
+                            new DatabaseConfig()
+                                .set("host", "localhost")
+                                .set("database", "variodb")
+                                .set("collection", "hgnc_genes"));
+            } catch (DatabaseConnectionException e) {
+                System.err.println("Could not initialize the Mongo database.");
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
         }
+
+        variantHandler.setDatabase(variantDb);
+        geneHandler.setDatabase(geneDb);
+        variantHandler.setGeneNameDatabase(geneDb);
 
         router.bind(Routes.GENES,               geneHandler);
         router.bind(Routes.NCBISV,              ncbiHandler);
