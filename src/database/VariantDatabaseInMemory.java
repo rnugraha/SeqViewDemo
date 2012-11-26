@@ -42,7 +42,10 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
     public static void main(String[] args) {
         VariantDatabaseInMemory db = new VariantDatabaseInMemory("/Users/pellonpe/tmp/variants.json");
-        db.getVariantsData("AGL", 0, 1);
+//        db.getVariantsData("AGL", 0, 1);
+        db.getVariantById("50710ffb0364faf736de5ce5");
+        db.getVariantById("50710ffb0364faf736de5ce7");
+        db.getVariantById("50710ffb0364faf736de5cef");
     }
 
     public VariantDatabaseInMemory(String src) {
@@ -60,11 +63,28 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
     @Override
     public DatabaseQueryResult getVariantById(String id) {
+        DatabaseQueryResult result = new DatabaseQueryResult();
+
         if (dbInMemory == false) {
             initdb();
+            if (dbInMemory == false) {
+                return result;
+            }
         }
         
-        return null;
+        // Protect against SQL injections.
+        if (!SqlParameter.sqlInjectionResistant(id, SqlParameter.ALPHANUMERIC)) {
+            System.err.println("Possibly dangerous query parameter (id): '" + id + "'");
+            return result;
+        }
+
+        String fmt = "SELECT FROM cluster:%s WHERE id = ?";
+        String sql = String.format(fmt, CLUSTER_NAME);
+        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
+        List<ODocument> queryResult = database.command(query).execute(id);
+        System.err.println("Count: " + queryResult.size());
+//        result.set("variant", v);
+        return result;
     }
 
     @Override
@@ -100,6 +120,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
         List<ODocument> queryResult = database.command(query).execute(gene);
         result.set(COUNT_PROPERTY, queryResult.size());
+        @SuppressWarnings("unchecked")
         ArrayList<Variant> variants = (ArrayList<Variant>) result.get(VARIANTS_PROPERTY);
         for (int i = 0; i < queryResult.size(); ++i) {
             ODocument d = queryResult.get(i);
@@ -110,6 +131,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     
     @SuppressWarnings("unchecked")
     private Variant doc2variant(ODocument d) {
+        @SuppressWarnings("rawtypes")
         Class cls = Variant.class;
         String json = d.toJSON();
         AnnotationIntrospector ai1 = new JacksonAnnotationIntrospector();
