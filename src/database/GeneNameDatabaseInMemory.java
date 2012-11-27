@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import security.SqlParameter;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.iterator.ORecordIteratorCluster;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import com.orientechnologies.orient.core.storage.OStorage;
@@ -65,25 +65,35 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         results.set("names", geneNames);
         
         // Prevent possible SQL injections.
-        if (sqlInjectionResistant(filterName) == false) {
-            return results;
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM cluster:%s");
-        sb.append(' ');
-        sb.append("WHERE approved_symbol like '%%%s%%'");
-        sb.append(' ');
-        sb.append("or approved_name like '%%%s%%'");
-        String fmt = sb.toString();
-        String sql = String.format(fmt, CLUSTER_NAME, filterName, filterName);
-        
-        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
-        List<ODocument> result = database.command(query).execute();
-        for (Iterator<ODocument> it = result.iterator(); it.hasNext();) {
-            ODocument d = it.next();
-            geneSymbols.add((String) d.field("approved_symbol"));
-            geneNames.add((String) d.field("approved_name"));
+//        if (sqlInjectionResistant(filterName) == false) {
+//            return results;
+//        }
+//        
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("SELECT * FROM cluster:%s");
+//        sb.append(' ');
+//        sb.append("WHERE approved_symbol like '%%%s%%'");
+//        sb.append(' ');
+//        sb.append("or approved_name like '%%%s%%'");
+//        String fmt = sb.toString();
+//        String sql = String.format(fmt, CLUSTER_NAME, filterName, filterName);
+//        
+//        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
+//        List<ODocument> result = database.command(query).execute();
+//        for (Iterator<ODocument> it = result.iterator(); it.hasNext();) {
+//            ODocument d = it.next();
+//            geneSymbols.add((String) d.field("approved_symbol"));
+//            geneNames.add((String) d.field("approved_name"));
+//        }
+        ORecordIteratorCluster<ODocument> cit = database.browseCluster(CLUSTER_NAME);
+        for (ODocument d : cit) {
+            String symbol = d.field("approved_symbol");
+            String name = d.field("approved_name");
+            if (name.toLowerCase().contains(filterName) 
+                    || symbol.toLowerCase().contains(filterName)) {
+                geneNames.add(name);
+                geneSymbols.add(symbol);
+            }
         }
         return results;
     }

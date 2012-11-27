@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import security.SqlParameter;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.iterator.ORecordIteratorCluster;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import com.orientechnologies.orient.core.storage.OStorage;
@@ -79,7 +81,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
     public DatabaseQueryResult getVariantsData(String gene, int skip, int limit) {
         final String COUNT_PROPERTY = "total_count";
         final String VARIANTS_PROPERTY = "variants";
-
+        
         DatabaseQueryResult result = new DatabaseQueryResult();
         result.set(COUNT_PROPERTY, new Long(0));
         result.set(VARIANTS_PROPERTY, new ArrayList<Map<String, Object>>());
@@ -102,21 +104,64 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
             System.err.println("Possibly dangerous query parameter: '" + gene + "'");
             return result;
         }
-
-        String fmt = "SELECT FROM cluster:%s WHERE genes contains(accession = %s) SKIP %d LIMIT %d";
-        String sql = String.format(fmt, CLUSTER_NAME, gene, skip, limit);
-        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
-        List<ODocument> queryResult = database.command(query).execute(gene);
-        result.set(COUNT_PROPERTY, new Long(queryResult.size()));
+        
+        ORecordIteratorCluster<ODocument> cit = database.browseCluster(CLUSTER_NAME);
         @SuppressWarnings("unchecked")
         ArrayList<Map<String, Object>> variants = 
-            (ArrayList<Map<String, Object>>) result.get(VARIANTS_PROPERTY);
-        for (int i = 0; i < queryResult.size(); ++i) {
-            variants.add(doc2map(queryResult.get(i)));
+                (ArrayList<Map<String, Object>>) result.get(VARIANTS_PROPERTY);
+        long count = 0;
+        for (ODocument d : cit) {
+            if (matches(d, gene)) {
+                ++count;
+                if (skip > 0) {
+                    --skip;
+                    continue;
+                }
+                if (limit > 0) {
+                    --limit;
+                    variants.add(doc2map(d));
+                }
+            }
         }
+        result.set(COUNT_PROPERTY, count);
+
+//        String fmt = "SELECT * FROM cluster:%s";
+//        String sql = String.format(fmt, CLUSTER_NAME);
+//        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
+//        List<ODocument> queryResult = database.command(query).execute();
+//        System.err.println("count: " + queryResult.size());
+//        result.set(COUNT_PROPERTY, new Long(queryResult.size()));
+//        @SuppressWarnings("unchecked")
+//        ArrayList<Map<String, Object>> variants = 
+//            (ArrayList<Map<String, Object>>) result.get(VARIANTS_PROPERTY);
+//        int left = limit;
+//        for (int i = skip; i < queryResult.size(); ++i) {
+//            if (left-- == 0) {
+//                break;
+//            }
+//            ODocument d = queryResult.get(i);
+//            Map<String, Object> m = doc2map(d);
+//            variants.add(m);
+//            ArrayList<LinkedHashMap> l = d.field("genes");
+//            for (LinkedHashMap s : l) {
+//                System.err.println("elem: " + s.get("accession"));
+//            }
+//        }
         return result;
     }
     
+    private boolean matches(ODocument d, String gene) {
+        @SuppressWarnings("rawtypes")
+        ArrayList<LinkedHashMap> l = d.field("genes");
+        for (@SuppressWarnings("rawtypes") LinkedHashMap s : l) {
+            String accession = (String) s.get("accession");
+            if (accession.compareTo(gene) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Map<String, Object> doc2map(ODocument d) {
         String[] fields = d.fieldNames();
         Map<String, Object> m = new HashMap<String, Object>();
