@@ -2,9 +2,9 @@ package database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
-import org.varioml.jaxb.Variant;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -43,8 +43,9 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
         DBObject d = this.collection.findOne(query);
-        Variant v = (Variant) util.encode(d, Variant.class);
-        result.set("variant", v);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> m = d.toMap();
+        result.set("variant", m);
         return result;
     }
 
@@ -53,7 +54,7 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
         
         MongoUtil util = new MongoUtil();
         long count = 0;
-        List<Variant> variants = new ArrayList<Variant>();
+        List<Map<String, Object>> variants = new ArrayList<Map<String, Object>>();
         DBCursor cursor = null;
         BasicDBObject query = new BasicDBObject();
         GeneNameDatabase geneDb = getGeneNameDatabase();
@@ -90,8 +91,7 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
 //                }
 //                System.err.println();
                 
-                Variant v = (Variant) util.encode(dobj, Variant.class);
-                variants.add(v);
+                variants.add(dobj.toMap());
             }
         }
         finally {

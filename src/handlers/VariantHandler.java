@@ -17,7 +17,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.eclipse.jetty.http.HttpMethods;
 import org.eclipse.jetty.server.Request;
-import org.varioml.jaxb.Variant;
 import org.varioml.util.Util;
 
 import database.DatabaseQueryResult;
@@ -84,7 +83,8 @@ public class VariantHandler extends BaseHandler {
                 HgncData hgnc = (HgncData) r1.get("hgnc");
                 String id = params.get(idKey)[0];
                 DatabaseQueryResult r2 = db.getVariantById(id);
-                Variant variant = (Variant) r2.get("variant");
+                @SuppressWarnings("unchecked")
+                Map<String, Object> variant = (Map<String, Object>) r2.get("variant");
                 
                 String jsonFormat = "{\"variant\": %s, \"hgnc\": %s}";
                 
@@ -119,7 +119,7 @@ public class VariantHandler extends BaseHandler {
                 DatabaseQueryResult data = db.getVariantsData(gene, skip, limit);
                 long count = (Long) data.get("total_count");
                 @SuppressWarnings("unchecked")
-                List<Variant> variants = (List<Variant>) data.get("variants");
+                List<Map<String, Object>> variants = (List<Map<String, Object>>) data.get("variants");
                 if (variants.isEmpty()) {
                     sendString(String.format(JSON_STRING_PATTERN, count, "[]"), 
                                MimeType.JSON, 
