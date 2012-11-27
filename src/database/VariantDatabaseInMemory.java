@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import network.EnsemblURL;
+
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -113,7 +115,9 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
                 }
                 if (limit > 0) {
                     --limit;
-                    variants.add(doc2map(d));
+                    Map<String, Object> m = doc2map(d);
+                    m.put("uri", EnsemblURL.uri(getEnsemblId(gene)));
+                    variants.add(m);
                 }
             }
         }

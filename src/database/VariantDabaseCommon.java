@@ -11,6 +11,12 @@ public abstract class VariantDabaseCommon implements VariantDatabase {
         super();
         geneDb = null;
     }
+    
+    public String getEnsemblId(String gene) {
+        HgncData hgnc = geneDb.getHgncData(gene);
+        String id = (String) hgnc.get("ensembl_id_ensembl");
+        return id;
+    }
 
     @Override
     public DatabaseQueryResult getHgncData(String gene) {
