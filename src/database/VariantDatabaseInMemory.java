@@ -99,12 +99,6 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
             }
         }
         
-        // Protect against SQL injections.
-        if (!sqlInjectionResistant(gene)) {
-            System.err.println("Possibly dangerous query parameter: '" + gene + "'");
-            return result;
-        }
-        
         ORecordIteratorCluster<ODocument> cit = database.browseCluster(CLUSTER_NAME);
         @SuppressWarnings("unchecked")
         ArrayList<Map<String, Object>> variants = 
@@ -124,29 +118,6 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
             }
         }
         result.set(COUNT_PROPERTY, count);
-
-//        String fmt = "SELECT * FROM cluster:%s";
-//        String sql = String.format(fmt, CLUSTER_NAME);
-//        OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(sql);
-//        List<ODocument> queryResult = database.command(query).execute();
-//        System.err.println("count: " + queryResult.size());
-//        result.set(COUNT_PROPERTY, new Long(queryResult.size()));
-//        @SuppressWarnings("unchecked")
-//        ArrayList<Map<String, Object>> variants = 
-//            (ArrayList<Map<String, Object>>) result.get(VARIANTS_PROPERTY);
-//        int left = limit;
-//        for (int i = skip; i < queryResult.size(); ++i) {
-//            if (left-- == 0) {
-//                break;
-//            }
-//            ODocument d = queryResult.get(i);
-//            Map<String, Object> m = doc2map(d);
-//            variants.add(m);
-//            ArrayList<LinkedHashMap> l = d.field("genes");
-//            for (LinkedHashMap s : l) {
-//                System.err.println("elem: " + s.get("accession"));
-//            }
-//        }
         return result;
     }
     
