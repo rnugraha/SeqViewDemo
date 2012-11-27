@@ -69,8 +69,8 @@ public class ServerApplication {
             variantDb = new VariantDatabaseInMemory(source);
             
             source = "";
-            if (config.exists(AppProperties.VARIANTDB)) {
-                source = config.get(AppProperties.VARIANTDB);
+            if (config.exists(AppProperties.GENEDB)) {
+                source = config.get(AppProperties.GENEDB);
             }
             geneDb = new GeneNameDatabaseInMemory(source);
             
