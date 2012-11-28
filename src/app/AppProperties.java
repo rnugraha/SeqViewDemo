@@ -15,6 +15,9 @@ public class AppProperties {
 
     // The path to a json file from which we load variant data.
     public static final String VARIANTDB = "variantdb";
+    
+    // The type of database to use.
+    public static final String DATABASE = "database";
 
     // Use an in-memory, or embedded, database.
     public static final String DB_MEMORY = "memory";
