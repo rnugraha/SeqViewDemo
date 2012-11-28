@@ -59,6 +59,7 @@ public class AppProperties {
     {
         defaults = new Properties();
         defaults.setProperty(PORT, "8080");
+        defaults.setProperty(DATABASE, DB_MEMORY);
         
         properties = new Properties(defaults);
         try {
