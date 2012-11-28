@@ -50,6 +50,7 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
             source = new File(DEFAULT_HGNC_DATA);
         }
         sourceIsRead = false;
+        initdb();
     }
 
     @Override

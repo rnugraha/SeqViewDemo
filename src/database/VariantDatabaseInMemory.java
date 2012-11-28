@@ -46,6 +46,7 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
             source = new File(DEFAULT_VARIANT_DATA);
         }
         dbInMemory = false;
+        initdb();
     }
 
     public VariantDatabaseInMemory() {
