@@ -319,6 +319,256 @@ FimmWidgets.util = {};        // For utility functions.
     } 
   }
 
+  function doSearch(appConfig) {
+    var geneName = Ext.getCmp(appConfig.geneSearchComboboxId).getValue();
+    var grid = Ext.get(appConfig.variantGridId);
+    var main = Ext.get(appConfig.containerDivId);
+    var renderer = Ext.create('ValueRenderer');
+    var svbtnId = Ext.id();       // Button to show seqviewer.
+    var ensemblId = Ext.id();     // Button to open Ensembl page.
+    var toolbarId = Ext.id();
+    var store, win;
+
+    if (typeof geneName !== 'string'){
+      Ext.MessageBox.alert("No input given", "Please give a gene name.");
+      return;
+    }
+
+    if (geneName.length > 2) {
+      if (grid !== null) {
+        grid.destroy();
+      }
+
+      fw.shared.geneName = geneName;
+      (function(name) {
+        var div = Ext.get(appConfig.variantTitleDivId);
+        if (div.child('h2') !== null) {
+          div.child('h2').remove();
+        }
+        div.createChild({
+          tag: 'h2',
+          html: name
+        });
+      }(geneName));
+
+      store = Ext.create('Ext.data.Store', {
+        pageSize: 10,
+        model: 'Variant',
+        autoLoad: true,
+        remoteSort: true,
+        proxy: {
+          // load using script tags for cross domain, if the data in on the same domain as
+          // this page, an HttpProxy would be better
+          type: 'ajax',
+          // /learning_extjs/extjs/examples/grid/variants?_dc=1347428880556&page=1&start=0&limit=50&sort=lastpost&dir=DESC&callback=Ext.data.JsonP.callback1
+          // /learning_extjs/extjs/examples/grid/variants
+          url: '/variants',
+          reader: {
+            root: 'variants',
+            totalProperty: 'totalCount'
+          },
+          extraParams: {
+            gene: geneName
+          },
+          simpleSortMode: false
+        }
+      });
+      grid = Ext.create('Ext.grid.Panel', {
+        width: 700,
+        height: 450,
+        title: 'Browse Variants',
+        id: appConfig.variantGridId,
+        renderTo: appConfig.variantGridDivId,
+        store: store,
+        selModel: {
+          allowDeselect: true,
+          mode: 'SINGLE'
+        },
+        loadMask: true,
+        listeners: {
+          selectionchange: {
+            fn: function(rowModel, selected, eOpts) {
+              var btn = Ext.getCmp(svbtnId);
+              var ens = Ext.getCmp(ensemblId);
+              var toolbar = Ext.getCmp(toolbarId);
+              var sel = {};
+              var variant;
+
+              if (selected.length > 0) {
+                variant = selected[0];
+                sel.variant = variant;
+                sel.symbol = variant.data.genes[0].accession;
+                sel.uri = variant.get('uri')
+                sel.id = variant.get('id')
+                fw.shared.selected = sel;
+                toolbar.enable();
+                btn.enable();
+                ens.enable();
+              } else {
+                fw.shared.selected = null;
+                toolbar.disable();
+                btn.disable();
+                ens.disable();
+              }
+            }
+          }
+        },
+        viewConfig: {
+          id: 'gv',
+          trackOver: false,
+          stripeRows: false,
+        },
+        // grid columns
+        columns:[
+          {
+            text: "Name",
+            dataIndex: 'name',
+            flex: 1,
+            renderer: renderer.renderName,
+            sortable: true
+          }, {
+            text: "Accession",
+            dataIndex: 'ref_seq',
+            flex: 1,
+            renderer: renderer.renderAccessionNumbers,
+            sortable: false
+          }, {
+            text: "Variant Gene",
+            dataIndex: 'genes',
+            flex: 1,
+            renderer: renderer.renderVariantGenes,
+            sortable: false
+          }, {
+            text: "Frequencies",
+            dataIndex: 'frequencies',
+            flex: 1,
+            renderer: renderer.renderFrequencies,
+            sortable: false
+          }
+        ],
+        tbar: [
+          {
+            text: 'Display',
+            id: toolbarId,
+            disabled: true,
+            menu: {
+              xtype: 'menu',
+              items: [
+                {
+                  xtype: 'menuitem',
+                  id: svbtnId,
+                  text: 'SeqView',
+                  disabled: true,
+                  listeners: {
+                    click: function(){
+                      var selected = fw.shared.selected;
+
+                      Ext.Ajax.request({
+                        url: '/seqviewer',
+                        method: 'GET',
+                        params: {
+                          'id': selected.id,
+                          'symbol': selected.symbol
+                        },
+                        success: function(res){
+                          var json = Ext.JSON.decode(res.responseText);
+                          var variant = json.variant;
+                          var hgnc = json.hgnc;
+                          var win = fw.shared.win;
+                          var conf = fw.util.create(fw.shared.seqviewConfig);
+                          var start = Number(variant.locations[0].start);
+                          var end = Number(variant.locations[0].end);
+                          var marker = selected.variant.data.name.string;
+                          var color = '00ff00';
+                          /*
+                            How many times are we going to check the availability
+                            of 'show_sequence_viewer' method.
+                          */
+                          var tries = 10;
+                          function showsv(w){
+                            if (tries == 0){
+                              console.log('After 10 attempts, seqview window still does not have "show_sequence_viewer" method.');
+                              return;
+                            }
+                            tries -= 1;
+                            /*
+                              It is not enough to check the 'readyState' property. 
+                              Chrome and Safari seem to handle it in a different 
+                              way compared to Firefox. They don't make the 
+                              'show_sequence_viewer' method available immediately.
+                            */
+                            if (w.document.readyState === 'complete'
+                                && w['show_sequence_viewer'] !== undefined
+                                && typeof w['show_sequence_viewer'] === 'function'){
+                              w.show_sequence_viewer(conf);
+                            } else {
+                              setTimeout(function(){
+                                showsv(w);
+                              }, 500);
+                            }
+                          };
+
+                          conf.start = start;
+                          conf.end = end;
+                          //conf.id = variant.ref_seq.accession;
+                          conf.id = variant.locations[0].ref_seq.accession;
+                          if (conf.end - conf.start < 100) {
+                            (function(c) {
+                              var sep = Number(c.end - c.start).toFixed();
+                              var rem = 100 - sep;
+                              rem = Number(rem / 2).toFixed();
+                              rem = parseInt(rem, 10);
+                              if (Number(c.start - rem) > 0) {
+                                c.start = Number(c.start - rem);
+                              }
+                              c.end = Number(c.end + rem);
+                            }(conf));
+                          }
+                          conf.mk = Ext.String.format('{0}:{1}|{2}|{3}',
+                                                      start, end, marker, color);
+                          /*
+                          conf.mk = String(start).concat(':')
+                                                  .concat(end)
+                                                  .concat("|MarkerName|00ff00");
+                          */
+
+                          if (!win || win.closed === true) {
+                            win = window.open('http://localhost:8080/index.html', '_blank');
+                            fw.shared.win = win;
+                          }
+                          showsv(win);
+                        }
+                      });
+                    }
+                  },
+                },
+                {
+                  xtype: 'menuitem',
+                  text: 'Ensembl',
+                  id: ensemblId,
+                  disabled: true,
+                  listeners: {
+                    click: function(){
+                      var sel = fw.shared.selected;
+                      window.open(sel.uri, '_blank');
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        // paging bar on the bottom
+        bbar: Ext.create('Ext.PagingToolbar', {
+          store: store,
+          displayInfo: true,
+          displayMsg: 'Displaying variants {0} - {1} of {2}',
+          emptyMsg: "No variants to display",
+        })
+      });
+    }
+  }
+
   /*
    * This function can be called only after Ext JS files have been loaded.
    */
@@ -540,6 +790,20 @@ FimmWidgets.util = {};        // For utility functions.
           width: 320,
           labelWidth: 130,
           queryMode: 'remote',
+          enableKeyEvents: true,
+          listeners: {
+            keypress: {
+              fn: function(combo, evnt){
+                var btn;
+                var date;
+
+                if (evnt.getKey() === 13) {
+                  // Enter key was pressed.
+                  doSearch(appConfig);
+                }
+              }
+            }
+          },
           minChars: 3,
           typeAhead: true,
           typeAheadDelay: 1000
@@ -549,254 +813,7 @@ FimmWidgets.util = {};        // For utility functions.
           id: appConfig.geneSearchButtonId,
           text: 'Search',
           handler: function(){
-
-            var geneName = Ext.getCmp(appConfig.geneSearchComboboxId).getValue();
-            var grid = Ext.get(appConfig.variantGridId);
-            var main = Ext.get(appConfig.containerDivId);
-            var renderer = Ext.create('ValueRenderer');
-            var svbtnId = Ext.id();       // Button to show seqviewer.
-            var ensemblId = Ext.id();     // Button to open Ensembl page.
-            var toolbarId = Ext.id();
-            var store, win;
-
-            if (typeof geneName !== 'string'){
-              Ext.MessageBox.alert("No input given", "Please give a gene name.");
-              return;
-            }
-
-            if (geneName.length > 2) {
-              if (grid !== null) {
-                grid.destroy();
-              }
-
-              fw.shared.geneName = geneName;
-              (function(name) {
-                var div = Ext.get(appConfig.variantTitleDivId);
-                if (div.child('h2') !== null) {
-                  div.child('h2').remove();
-                }
-                div.createChild({
-                  tag: 'h2',
-                  html: name
-                });
-              }(geneName));
-
-              store = Ext.create('Ext.data.Store', {
-                pageSize: 10,
-                model: 'Variant',
-                autoLoad: true,
-                remoteSort: true,
-                proxy: {
-                  // load using script tags for cross domain, if the data in on the same domain as
-                  // this page, an HttpProxy would be better
-                  type: 'ajax',
-                  // /learning_extjs/extjs/examples/grid/variants?_dc=1347428880556&page=1&start=0&limit=50&sort=lastpost&dir=DESC&callback=Ext.data.JsonP.callback1
-                  // /learning_extjs/extjs/examples/grid/variants
-                  url: '/variants',
-                  reader: {
-                    root: 'variants',
-                    totalProperty: 'totalCount'
-                  },
-                  extraParams: {
-                    gene: geneName
-                  },
-                  simpleSortMode: false
-                }
-              });
-              grid = Ext.create('Ext.grid.Panel', {
-                width: 700,
-                height: 450,
-                title: 'Browse Variants',
-                id: appConfig.variantGridId,
-                renderTo: appConfig.variantGridDivId,
-                store: store,
-                selModel: {
-                  allowDeselect: true,
-                  mode: 'SINGLE'
-                },
-                loadMask: true,
-                listeners: {
-                  selectionchange: {
-                    fn: function(rowModel, selected, eOpts) {
-                      var btn = Ext.getCmp(svbtnId);
-                      var ens = Ext.getCmp(ensemblId);
-                      var toolbar = Ext.getCmp(toolbarId);
-                      var sel = {};
-                      var variant;
-
-                      if (selected.length > 0) {
-                        variant = selected[0];
-                        sel.variant = variant;
-                        sel.symbol = variant.data.genes[0].accession;
-                        sel.uri = variant.get('uri')
-                        sel.id = variant.get('id')
-                        fw.shared.selected = sel;
-                        toolbar.enable();
-                        btn.enable();
-                        ens.enable();
-                      } else {
-                        fw.shared.selected = null;
-                        toolbar.disable();
-                        btn.disable();
-                        ens.disable();
-                      }
-                    }
-                  }
-                },
-                viewConfig: {
-                  id: 'gv',
-                  trackOver: false,
-                  stripeRows: false,
-                },
-                // grid columns
-                columns:[
-                  {
-                    text: "Name",
-                    dataIndex: 'name',
-                    flex: 1,
-                    renderer: renderer.renderName,
-                    sortable: true
-                  }, {
-                    text: "Accession",
-                    dataIndex: 'ref_seq',
-                    flex: 1,
-                    renderer: renderer.renderAccessionNumbers,
-                    sortable: false
-                  }, {
-                    text: "Variant Gene",
-                    dataIndex: 'genes',
-                    flex: 1,
-                    renderer: renderer.renderVariantGenes,
-                    sortable: false
-                  }, {
-                    text: "Frequencies",
-                    dataIndex: 'frequencies',
-                    flex: 1,
-                    renderer: renderer.renderFrequencies,
-                    sortable: false
-                  }
-                ],
-                tbar: [
-                  {
-                    text: 'Display',
-                    id: toolbarId,
-                    disabled: true,
-                    menu: {
-                      xtype: 'menu',
-                      items: [
-                        {
-                          xtype: 'menuitem',
-                          id: svbtnId,
-                          text: 'SeqView',
-                          disabled: true,
-                          listeners: {
-                            click: function(){
-                              var selected = fw.shared.selected;
-
-                              Ext.Ajax.request({
-                                url: '/seqviewer',
-                                method: 'GET',
-                                params: {
-                                  'id': selected.id,
-                                  'symbol': selected.symbol
-                                },
-                                success: function(res){
-                                  var json = Ext.JSON.decode(res.responseText);
-                                  var variant = json.variant;
-                                  var hgnc = json.hgnc;
-                                  var win = fw.shared.win;
-                                  var conf = fw.util.create(fw.shared.seqviewConfig);
-                                  var start = Number(variant.locations[0].start);
-                                  var end = Number(variant.locations[0].end);
-                                  var marker = selected.variant.data.name.string;
-                                  var color = '00ff00';
-                                  /*
-                                    How many times are we going to check the availability
-                                    of 'show_sequence_viewer' method.
-                                  */
-                                  var tries = 10;
-                                  function showsv(w){
-                                    if (tries == 0){
-                                      console.log('After 10 attempts, seqview window still does not have "show_sequence_viewer" method.');
-                                      return;
-                                    }
-                                    tries -= 1;
-                                    /*
-                                      It is not enough to check the 'readyState' property. 
-                                      Chrome and Safari seem to handle it in a different 
-                                      way compared to Firefox. They don't make the 
-                                      'show_sequence_viewer' method available immediately.
-                                    */
-                                    if (w.document.readyState === 'complete'
-                                        && w['show_sequence_viewer'] !== undefined
-                                        && typeof w['show_sequence_viewer'] === 'function'){
-                                      w.show_sequence_viewer(conf);
-                                    } else {
-                                      setTimeout(function(){
-                                        showsv(w);
-                                      }, 500);
-                                    }
-                                  };
-
-                                  conf.start = start;
-                                  conf.end = end;
-                                  //conf.id = variant.ref_seq.accession;
-                                  conf.id = variant.locations[0].ref_seq.accession;
-                                  if (conf.end - conf.start < 100) {
-                                    (function(c) {
-                                      var sep = Number(c.end - c.start).toFixed();
-                                      var rem = 100 - sep;
-                                      rem = Number(rem / 2).toFixed();
-                                      rem = parseInt(rem, 10);
-                                      if (Number(c.start - rem) > 0) {
-                                        c.start = Number(c.start - rem);
-                                      }
-                                      c.end = Number(c.end + rem);
-                                    }(conf));
-                                  }
-                                  conf.mk = Ext.String.format('{0}:{1}|{2}|{3}',
-                                                              start, end, marker, color);
-                                  /*
-                                  conf.mk = String(start).concat(':')
-                                                         .concat(end)
-                                                         .concat("|MarkerName|00ff00");
-                                  */
-
-                                  if (!win || win.closed === true) {
-                                    win = window.open('http://localhost:8080/index.html', '_blank');
-                                    fw.shared.win = win;
-                                  }
-                                  showsv(win);
-                                }
-                              });
-                            }
-                          },
-                        },
-                        {
-                          xtype: 'menuitem',
-                          text: 'Ensembl',
-                          id: ensemblId,
-                          disabled: true,
-                          listeners: {
-                            click: function(){
-                              var sel = fw.shared.selected;
-                              window.open(sel.uri, '_blank');
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  }
-                ],
-                // paging bar on the bottom
-                bbar: Ext.create('Ext.PagingToolbar', {
-                  store: store,
-                  displayInfo: true,
-                  displayMsg: 'Displaying variants {0} - {1} of {2}',
-                  emptyMsg: "No variants to display",
-                })
-              });
-            }
+            doSearch(appConfig);
           }
         }
       ]
