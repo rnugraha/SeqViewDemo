@@ -1,6 +1,6 @@
 /seqviewdemo.jar
 
-/app.properties
+/app.config
 
 # Ignore compiled (Java) files.
 /bin
