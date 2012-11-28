@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import network.EnsemblURL;
+
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
@@ -76,9 +78,7 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
                  * MongoDB ID-field.
                  */
                 dobj.put("id", dobj.get("_id").toString());
-                String hgncId = (String) hgnc.get("ensembl_id_ensembl");
-                String uri = ensemblUrl.concat(hgncId);
-                dobj.put("uri", uri);
+                dobj.put("uri", EnsemblURL.uri(getEnsemblId(gene)));
                 
 //                @SuppressWarnings("unchecked")
 //                Map<String, Object> props = dobj.toMap();
