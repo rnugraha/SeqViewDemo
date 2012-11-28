@@ -51,8 +51,23 @@ public class NcbiHandler extends BaseHandler {
             url = SVIEWER_URL.concat(cgi);
             
             // Avoid URISyntaxException. (http://perishablepress.com/how-to-write-valid-url-query-string-parameters/)
-            query = query.replace(" ", "+"); 
+//            query = query.replace(" ", "+"); 
+//          query = query.replace("|", "%7C");
+            query = query.replace(" ", "%20"); 
+            query = query.replace("\\", "%5C");
+            query = query.replace("%", "%25");
+            query = query.replace("-", "%2D");
+            query = query.replace(".", "%2E");
+            query = query.replace("<", "%3C");
+            query = query.replace(">", "%3E");
+            query = query.replace("\\", "%5C");
+            query = query.replace("^", "%5E");
+            query = query.replace("_", "%5F");
+            query = query.replace("`", "%60");
+            query = query.replace("{", "%7B");
             query = query.replace("|", "%7C");
+            query = query.replace("}", "%7D");
+            query = query.replace("~", "%7E");
             url = url.concat(query);
             
         }
