@@ -59,8 +59,11 @@ public class ServerApplication {
         
         VariantDatabase variantDb = null;
         GeneNameDatabase geneDb = null;
+        String dbType = config.get(AppProperties.DATABASE);
         
-        if (config.exists(AppProperties.DB_MEMORY)) {
+        if (dbType.compareTo(AppProperties.DB_MEMORY) == 0) {
+            
+            // Use in-memory database.
             
             String source = "";
             if (config.exists(AppProperties.VARIANTDB)) {
@@ -74,7 +77,9 @@ public class ServerApplication {
             }
             geneDb = new GeneNameDatabaseInMemory(source);
             
-        } else {
+        } else if (dbType.compareTo(AppProperties.DB_MONGO) == 0) {
+            
+            // Use MongoDB.
 
             try {
                 variantDb = 
