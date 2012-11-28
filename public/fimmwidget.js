@@ -794,9 +794,6 @@ FimmWidgets.util = {};        // For utility functions.
           listeners: {
             keypress: {
               fn: function(combo, evnt){
-                var btn;
-                var date;
-
                 if (evnt.getKey() === 13) {
                   // Enter key was pressed.
                   doSearch(appConfig);
