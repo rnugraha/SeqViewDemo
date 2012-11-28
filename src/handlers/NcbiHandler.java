@@ -60,7 +60,6 @@ public class NcbiHandler extends BaseHandler {
             query = query.replace(".", "%2E");
             query = query.replace("<", "%3C");
             query = query.replace(">", "%3E");
-            query = query.replace("\\", "%5C");
             query = query.replace("^", "%5E");
             query = query.replace("_", "%5F");
             query = query.replace("`", "%60");
