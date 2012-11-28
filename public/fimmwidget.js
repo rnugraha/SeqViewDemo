@@ -504,20 +504,6 @@ FimmWidgets.util = {};        // For utility functions.
       extend: 'Ext.form.field.ComboBox',
       alias: ['widget.gene-combobox'],
 
-      config: {
-        fieldLabel: 'Gene Name/symbol',
-        emptyText: 'Name/symbol',
-        displayField: 'name',
-        hideTrigger: true,
-        multiSelect: false,
-        width: 320,
-        labelWidth: 130,
-        queryMode: 'remote',
-        minChars: 3,
-        typeAhead: true,
-        typeAheadDelay: 1000
-      },
-
       constructor: function(cnfg) {
         //this.callParent(arguments);
         this.callParent([cnfg]);
@@ -545,7 +531,18 @@ FimmWidgets.util = {};        // For utility functions.
       items: [
         {
           xtype: 'gene-combobox',
-          id: appConfig.geneSearchComboboxId
+          id: appConfig.geneSearchComboboxId,
+          fieldLabel: 'Gene Name/symbol',
+          value: 'AGL (amylo-alpha-1, 6-glucosidase, 4-alpha-glucanotransferase)',
+          displayField: 'name',
+          hideTrigger: true,
+          multiSelect: false,
+          width: 320,
+          labelWidth: 130,
+          queryMode: 'remote',
+          minChars: 3,
+          typeAhead: true,
+          typeAheadDelay: 1000
         },
         {
           xtype: 'button',
@@ -681,7 +678,7 @@ FimmWidgets.util = {};        // For utility functions.
                 ],
                 tbar: [
                   {
-                    text: 'Variant',
+                    text: 'Display',
                     id: toolbarId,
                     disabled: true,
                     menu: {
