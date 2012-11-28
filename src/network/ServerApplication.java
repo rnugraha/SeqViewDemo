@@ -60,7 +60,7 @@ public class ServerApplication {
         VariantDatabase variantDb = null;
         GeneNameDatabase geneDb = null;
         
-        if (config.exists(AppProperties.INMEMORY)) {
+        if (config.exists(AppProperties.DB_MEMORY)) {
             
             String source = "";
             if (config.exists(AppProperties.VARIANTDB)) {

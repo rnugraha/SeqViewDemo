@@ -17,7 +17,7 @@ public class AppProperties {
     public static final String VARIANTDB = "variantdb";
 
     // Use an in-memory, or embedded, database.
-    public static final String INMEMORY = "in-memory";
+    public static final String DB_MEMORY = "memory";
 
     // Select a directory to serve static files from.
     public static final String WWWDIR = "wwwdir";
