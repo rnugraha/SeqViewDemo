@@ -49,13 +49,13 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         if (source.isDirectory() || !source.exists()) {
             source = new File(DEFAULT_HGNC_DATA);
         }
-        sourceIsRead = false;
+        dbInMemory = false;
         initdb();
     }
 
     @Override
     public DatabaseQueryResult getGeneNamesAndSymbols(String filterName) {
-        if (sourceIsRead == false) {
+        if (dbInMemory == false) {
             initdb();
         }
         
@@ -81,7 +81,7 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     @Override
     public HgncData getHgncData(String symbol) {
         HgncData hgnc = null;
-        if (sourceIsRead == false) {
+        if (dbInMemory == false) {
             initdb();
         }
         final String fmt = "SELECT * FROM cluster:%s WHERE approved_symbol = ?";
@@ -138,7 +138,7 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
             e.printStackTrace();
             return;
         }
-        sourceIsRead = true;
+        dbInMemory = true;
     }
     
     private static String abspath(String filename) {
@@ -153,7 +153,7 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
     private static final String CLUSTER_NAME = "hgnc";
     
     private File source;
-    private boolean sourceIsRead;
+    private boolean dbInMemory;
     private ODatabaseDocumentTx database;
     
     static {
