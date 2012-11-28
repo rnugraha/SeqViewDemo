@@ -18,6 +18,9 @@ public class AppProperties {
 
     // Use an in-memory, or embedded, database.
     public static final String DB_MEMORY = "memory";
+    
+    // Use MongoDB as database.
+    public static final String DB_MONGO = "mongo";
 
     // Select a directory to serve static files from.
     public static final String WWWDIR = "wwwdir";
