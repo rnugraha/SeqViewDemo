@@ -51,23 +51,7 @@ public class NcbiHandler extends BaseHandler {
             url = SVIEWER_URL.concat(cgi);
             
             // Avoid URISyntaxException. (http://perishablepress.com/how-to-write-valid-url-query-string-parameters/)
-//            query = query.replace(" ", "+"); 
-//          query = query.replace("|", "%7C");
-            query = query.replace(" ", "%20"); 
-            query = query.replace("\\", "%5C");
-            query = query.replace("%", "%25");
-            query = query.replace("-", "%2D");
-            query = query.replace(".", "%2E");
-            query = query.replace("<", "%3C");
-            query = query.replace(">", "%3E");
-            query = query.replace("^", "%5E");
-            query = query.replace("_", "%5F");
-            query = query.replace("`", "%60");
-            query = query.replace("{", "%7B");
-            query = query.replace("|", "%7C");
-            query = query.replace("}", "%7D");
-            query = query.replace("~", "%7E");
-            url = url.concat(query);
+            url = url.concat(encodeCharacters(query));
             
         }
         
@@ -109,6 +93,24 @@ public class NcbiHandler extends BaseHandler {
         this.sendStream(entity.getContent(), mime, length, 
                         baseRequest, request, response);
 
+    }
+
+    private String encodeCharacters(String query) {
+        String s = query.replace(" ", "%20") 
+                        .replace("\\", "%5C")
+                        .replace("%", "%25")
+                        .replace("-", "%2D")
+                        .replace(".", "%2E")
+                        .replace("<", "%3C")
+                        .replace(">", "%3E")
+                        .replace("^", "%5E")
+                        .replace("_", "%5F")
+                        .replace("`", "%60")
+                        .replace("{", "%7B")
+                        .replace("|", "%7C")
+                        .replace("}", "%7D")
+                        .replace("~", "%7E");
+        return s;
     }
     
     private String makeUrl(String path, String route, String url) {
