@@ -55,27 +55,6 @@ public class NcbiHandler extends BaseHandler {
             
         }
         
-//        String msg = String.format("Route: %s\nPath: %s\nURL: %s", route, path, url);
-//        System.err.println(msg);
-//        
-//        System.err.println("Query string: " + query + ".");
-//        System.err.println("Encoded query string:\n\t" + java.net.URLEncoder.encode(query, "UTF8") + ".");
-//        System.err.println("Servlet path: " + request.getServletPath() + ".");
-//        System.err.println("Requested URL: " + request.getRequestURL() + ".");
-//        System.err.println("Requested path: " + path + ".");
-//        System.err.println("Path info: " + request.getPathInfo() + ".");
-//        System.err.println("Query string: " + request.getQueryString() + ".");
-//        System.err.println("Query string (baseRequest): " + baseRequest.getQueryString() + ".");
-//        Set<String> keys = map.keySet();
-//        Iterator<String> it = keys.iterator();
-//        while (it.hasNext()) {
-//            String key = it.next();
-//            String value = map.get(key)[0];
-//            String s = String.format("\t%s = %s", key, value);
-//            System.err.println(s);
-//        }
-//        System.err.println("Query string: " + QueryStringBuilder.build(map) + ".");
-        
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet httpget = new HttpGet(url);
         res = httpclient.execute(httpget);

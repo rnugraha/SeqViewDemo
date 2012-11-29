@@ -103,12 +103,10 @@ public abstract class BaseHandler extends AbstractHandler {
                 break;
             }
             counter += numRead;
-//            System.err.println(String.format("counter = %d; read = %d", counter, numRead));
             out.write(buf, 0, numRead);
         }
         out.flush();
         out.close();
-//        System.err.println("Wrote " + counter + " bytes in total.");
         this.setRequestHandled(baseRequest);
 
     }

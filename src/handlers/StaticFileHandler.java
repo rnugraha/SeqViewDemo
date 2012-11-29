@@ -65,18 +65,6 @@ public class StaticFileHandler extends BaseHandler {
 
         if (HttpMethods.GET.equals(request.getMethod())) {
 
-//            System.err.println(request.getPathInfo() );
-//            System.err.println(request.getQueryString()  );
-//            @SuppressWarnings("unchecked")
-//            Map<String, String[]> map = request.getParameterMap();
-//            Set<String> keys = map.keySet();
-//            Iterator<String> it = keys.iterator();
-//            while (it.hasNext()) {
-//                String k = it.next();
-//                String v = map.get(k)[0];
-//                System.err.println("\t".concat(String.format("%s=%s", k, v)));
-//            }
-            
             if (path.equals("/")) {
                 path = "/index.html";
             }
@@ -111,7 +99,7 @@ public class StaticFileHandler extends BaseHandler {
     
     private String getMimeType(String path) {
         // As we are interested only in the suffix, there is 
-        // no harm in converting the PATH to lowercase.
+        // no harm in converting the PATH to lower case.
         path = path.toLowerCase();
         
         Enumeration<String> keys = mimeTypes.keys();

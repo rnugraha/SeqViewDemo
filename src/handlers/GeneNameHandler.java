@@ -37,18 +37,7 @@ public class GeneNameHandler extends BaseHandler {
         
         if (HttpMethods.GET.equals(method)) {
             
-//            String path = request.getRequestURI();
-//            System.err.println("Servlet path: " + request.getServletPath() + ".");
-//            System.err.println("Requested URL: " + request.getRequestURL() + ".");
-//            System.err.println("Requested path: " + path + ".");
-//            System.err.println("Query string: " + URIUtil.decodePath(request.getQueryString()) + ".");
-//            System.err.println("Parameter 'filter': " + request.getParameter("filter"));
-//            System.err.println("Matches: " + this.getQueryParam(request.getParameter("filter")));
-//            System.err.println("Parameter 'query': " + request.getParameter("query"));
-//            System.err.println("Matches: " + this.getQueryParam(request.getParameter("query")));
-            
             String query = this.getQueryParam(request.getParameter("query"));
-//            System.err.println(String.format("Filtering with '%s'.", query));
             DatabaseQueryResult r = db.getGeneNamesAndSymbols(query);
             @SuppressWarnings("unchecked")
             ArrayList<String> names = (ArrayList<String>) r.get("names");
@@ -84,23 +73,7 @@ public class GeneNameHandler extends BaseHandler {
                 sbuf.append(obj);
             }
             
-            // First loop iteration.
-//            sbuf.append(String.format(objFormat, symbols.get(index)));
-//            sbuf.append(",");
-//            sbuf.append(String.format(objFormat, names.get(index)));
-            
-            // The rest of the loop iteration.
-//            for (index = 1; index < names.size(); ++index) {
-//                sbuf.append(",");
-//                sbuf.append(String.format(objFormat, symbols.get(index)));
-//                sbuf.append(",");
-//                sbuf.append(String.format(objFormat, names.get(index)));
-//            }
-            
-//            Util util = new Util();
-//            String json = util.toJSONString(formattedNames);
             String json = String.format("[%s]", sbuf.toString()); 
-//            System.err.println(json.substring(0, 1024));
             sendString(json, MimeType.JSON, baseRequest, request, response);
             this.setRequestHandled(baseRequest);
 

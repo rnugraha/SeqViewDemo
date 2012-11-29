@@ -62,15 +62,12 @@ public class GeneNameDatabaseMongoDB implements GeneNameDatabase {
         DBObject dbObject1 = QueryBuilder.start("approved_name").regex(p).get();
         DBObject dbObject2 = QueryBuilder.start("approved_symbol").regex(p).get();
         query = (BasicDBObject) qb.or(dbObject1, dbObject2).get();
-//        System.err.println("Pattern is "+ p.pattern());
         
         refs.put("approved_name", 1);
         refs.put("approved_symbol", 1);
         
         try {
             cursor = this.collection.find(query, refs);
-//            System.err.println("Count: " + cursor.count());
-//            cursor = cursor.limit(5);
             while (cursor.hasNext()) {
                 DBObject dobj = cursor.next();
                 String symbol = (String) dobj.get("approved_symbol");

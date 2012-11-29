@@ -20,10 +20,8 @@ public class MongoDatabaseConnection extends DatabaseConnection {
         try {
             m = new Mongo(hostName);
         } catch (UnknownHostException e) {
-            //System.err.println(e.getMessage());
             throw new DatabaseConnectionException(e.getMessage());
         } catch (MongoException e) {
-            //System.err.println(e.getMessage());
             throw new DatabaseConnectionException(e.getMessage());
         }
         

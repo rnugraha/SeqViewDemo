@@ -22,7 +22,7 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
         this.connection = new MongoDatabaseConnection(config);
         this.collection = this.connection.getCollection();
         
-        // Make sure database connection is properly closed whtn the 
+        // Make sure database connection is properly closed when the 
         // program terminates.
         // http://www.developerfeed.com/threads/tutorial/understanding-java-shutdown-hook
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -31,10 +31,7 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
                 closeConnection();
             }
 
-            private void closeConnection() {
-                // TODO Auto-generated method stub
-                
-            }
+            private void closeConnection() {}
         });
     }
     
@@ -79,18 +76,6 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
                  */
                 dobj.put("id", dobj.get("_id").toString());
                 dobj.put("uri", EnsemblURL.uri(getEnsemblId(gene)));
-                
-//                @SuppressWarnings("unchecked")
-//                Map<String, Object> props = dobj.toMap();
-//                Set<String> keys = props.keySet();
-//                Iterator<String> it = keys.iterator();
-//                while (it.hasNext()) {
-//                    String key = it.next();
-//                    String value = dobj.get(key).toString();
-//                    System.err.println(String.format("\tKey: '%s'; value: '%s'", key, value));
-//                }
-//                System.err.println();
-                
                 variants.add(dobj.toMap());
             }
         }

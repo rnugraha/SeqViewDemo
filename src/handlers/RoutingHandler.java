@@ -30,21 +30,6 @@ public class RoutingHandler extends AbstractHandler {
             HttpServletResponse response) throws IOException, ServletException {
 
         String path = request.getRequestURI();
-//        System.err.println("Servlet path: " + request.getServletPath() + ".");
-//        System.err.println("Requested URL: " + request.getRequestURL() + ".");
-//        System.err.println("Requested path: " + path + ".");
-//        System.err.println("Query string: " + request.getQueryString() + ".");
-//        @SuppressWarnings("unchecked")
-//        Map<String, String[]> map = request.getParameterMap();
-//        Set<String> keys = map.keySet();
-//        Iterator<String> it = keys.iterator();
-//        while (it.hasNext()) {
-//            System.err.println(it.next());
-//        }
-//        for (String s : path.split("/")) {
-//            System.err.println("\t".concat(s));
-//        }
-//        baseRequest.setHandled(true);
         
         if (path.length() < MINIMUM_ROUTE_LENGTH) {
             if ("/".equals(path)) {
