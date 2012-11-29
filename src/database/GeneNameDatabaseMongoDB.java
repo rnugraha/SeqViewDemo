@@ -84,7 +84,6 @@ public class GeneNameDatabaseMongoDB implements GeneNameDatabase {
     }
     
     private final MongoDatabaseConnection connection;
-    //private DB database;
     private final DBCollection collection;
     
     private static final int MINIMUM_FILTER_LENGTH = 3;
