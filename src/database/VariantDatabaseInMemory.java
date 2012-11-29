@@ -147,16 +147,6 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         return m;
     }
     
-    private boolean sqlInjectionResistant(String s) {
-        int mode = 0;
-        mode |= SqlParameter.ALPHANUMERIC;
-//        mode |= SqlParameter.HYPHEN;
-//        mode |= SqlParameter.SPACE;
-//        mode |= SqlParameter.PARENTHESES;
-//        mode |= SqlParameter.COMMA;
-        return SqlParameter.sqlInjectionResistant(s, mode);
-    }
-    
     private void initdb() {
         database = new ODatabaseDocumentTx(DATABASE_NAME).create();
         database.addCluster(CLUSTER_NAME, OStorage.CLUSTER_TYPE.MEMORY);
