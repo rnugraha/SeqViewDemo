@@ -85,7 +85,6 @@ public abstract class BaseHandler extends AbstractHandler {
         OutputStream out = null;
         final int BUFFER_SIZE = 1024 * 1024;
         byte[] buf = new byte[BUFFER_SIZE];
-        long counter = 0;
         int numRead = 0;
 
         try {
@@ -102,7 +101,6 @@ public abstract class BaseHandler extends AbstractHandler {
             if (numRead == -1) {
                 break;
             }
-            counter += numRead;
             out.write(buf, 0, numRead);
         }
         out.flush();
