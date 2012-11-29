@@ -37,7 +37,6 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
     
     @Override
     public DatabaseQueryResult getVariantById(String id) {
-        MongoUtil util = new MongoUtil();
         DatabaseQueryResult result = new DatabaseQueryResult();
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
@@ -51,13 +50,10 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
     @Override
     public DatabaseQueryResult getVariantsData(String gene, int skip, int limit) {
         
-        MongoUtil util = new MongoUtil();
         long count = 0;
         List<Map<String, Object>> variants = new ArrayList<Map<String, Object>>();
         DBCursor cursor = null;
         BasicDBObject query = new BasicDBObject();
-        GeneNameDatabase geneDb = getGeneNameDatabase();
-        HgncData hgnc = geneDb.getHgncData(gene);
         
         query.put("genes.accession", gene);
         
@@ -76,7 +72,9 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
                  */
                 dobj.put("id", dobj.get("_id").toString());
                 dobj.put("uri", EnsemblURL.uri(getEnsemblId(gene)));
-                variants.add(dobj.toMap());
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = dobj.toMap();
+                variants.add(map);
             }
         }
         finally {
@@ -90,8 +88,6 @@ public class VariantDatabaseMongoDB extends VariantDabaseCommon implements Varia
         return results;
     }   
 
-    private static final String ensemblUrl = "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=";
-    
     private final MongoDatabaseConnection connection;
     //private DB database;
     private final DBCollection collection;
