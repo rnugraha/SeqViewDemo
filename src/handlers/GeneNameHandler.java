@@ -2,7 +2,6 @@ package handlers;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -85,16 +84,6 @@ public class GeneNameHandler extends BaseHandler {
     }
     
     private String getQueryParam(String param) {
-        // [{"property":"name","value":"gamm"}]
-        // [{"property":"name","value":"gamma-aminobutyric acid (GABA) B receptor, 1"}]
-        
-//        if (param != null) {
-//            System.err.println("Param is " + param);
-//            Matcher m = filterPattern.matcher(param);
-//            if (m.matches()) {
-//                return m.group(1);
-//            }
-//        }
         if (param == null || param.trim().length() == 0) {
             return "";
         }
@@ -102,6 +91,5 @@ public class GeneNameHandler extends BaseHandler {
     }
     
     private GeneNameDatabase db;
-    private static Pattern filterPattern = Pattern.compile("^\\[\\{\"property\":\"name\",\"value\":\"([^\"]+)\"\\}\\]$");
     
 }
