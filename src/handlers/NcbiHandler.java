@@ -100,9 +100,9 @@ public class NcbiHandler extends BaseHandler {
         return url.concat(file);
     }
     
-    private final String BASE_URL = "http://www.ncbi.nlm.nih.gov";
-    private final String SVIEWER_URL = BASE_URL.concat("/projects/sviewer/");
-    private final String IMAGES_URL = BASE_URL.concat("/projects/sviewer/images/");
-    private final String EXTJS_URL = BASE_URL.concat("/core/extjs/ext-3.4.0/");
+    private static final String BASE_URL = "http://www.ncbi.nlm.nih.gov";
+    private static final String SVIEWER_URL = BASE_URL.concat("/projects/sviewer/");
+    private static final String IMAGES_URL = BASE_URL.concat("/projects/sviewer/images/");
+    private static final String EXTJS_URL = BASE_URL.concat("/core/extjs/ext-3.4.0/");
 
 }
