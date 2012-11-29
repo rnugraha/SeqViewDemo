@@ -11,8 +11,6 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import security.SqlParameter;
-
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.iterator.ORecordIteratorCluster;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -103,16 +101,6 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
             map.put(p, doc.field(p));
         }
         return map;
-    }
-    
-    private boolean sqlInjectionResistant(String s) {
-        int mode = 0;
-        mode |= SqlParameter.ALPHANUMERIC;
-        mode |= SqlParameter.HYPHEN;
-        mode |= SqlParameter.SPACE;
-        mode |= SqlParameter.PARENTHESES;
-        mode |= SqlParameter.COMMA;
-        return SqlParameter.sqlInjectionResistant(s, mode);
     }
     
     private void initdb() {
