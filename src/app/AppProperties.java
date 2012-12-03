@@ -56,6 +56,12 @@ public class AppProperties {
      */
     public static final String WWWDIR = "wwwdir";
 
+    /**
+     * If the parameter does not take/need a value, use this
+     * as a "place holder."
+     */
+    public static final String EMPTY_VALUE = "";
+    
     public AppProperties() {
         super();
     }

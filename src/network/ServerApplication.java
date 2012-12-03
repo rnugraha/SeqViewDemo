@@ -49,7 +49,7 @@ public class ServerApplication {
                     config.set(key, value);
                 } else {
                     // The argument does not take a value.
-                    config.set(arg, "");
+                    config.set(arg, AppProperties.EMPTY_VALUE);
                 }
             }
         }
