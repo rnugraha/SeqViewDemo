@@ -162,6 +162,15 @@ public class VariantHandler extends BaseHandler {
         }
     }
 
+    /**
+     * Get a proper value corresponding to the key NAME in PARAMS.
+     * Allow zero as a return value.
+     * 
+     * @param params        map to look up values from
+     * @param name          name, or key, to look up
+     * @param defaultValue  default value (if the key was not found)
+     * @return              a proper integer value
+     */
     private int paramValue(Map<String, String[]> params,
                         String name,
                         int defaultValue) {
@@ -170,6 +179,15 @@ public class VariantHandler extends BaseHandler {
         
     }
     
+    /**
+     * Get a proper value corresponding to the key NAME in PARAMS.
+     * 
+     * @param params        map to look up values from
+     * @param name          name, or key, to look up
+     * @param defaultValue  default value (if the key was not found)
+     * @param zeroAllowed   true if zero is a valid return value
+     * @return              a proper integer value
+     */
     private int paramValue(Map<String, String[]> params,
                           String name,
                           int defaultValue,
