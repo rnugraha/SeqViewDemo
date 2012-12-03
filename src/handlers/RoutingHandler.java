@@ -12,6 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+/**
+ * This handler examines the request and calls the 'handle' 
+ * method of the appropriate handler. Hence the
+ * <em>routing</em> handler.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class RoutingHandler extends AbstractHandler {
 
     public RoutingHandler() {
@@ -19,6 +27,13 @@ public class RoutingHandler extends AbstractHandler {
         routes = new HashMap<String, BaseHandler>();
     }
     
+    /**
+     * Bind a handler to a route.
+     * 
+     * @param route     the route (part of URL, or URI)
+     * @param handler   the handler which will handle the
+     *                  requests associated with the route
+     */
     public void bind(String route, BaseHandler handler) {
         if (routes.containsKey(route) == false) {
             routes.put(route, handler);
@@ -62,6 +77,23 @@ public class RoutingHandler extends AbstractHandler {
     private final int MINIMUM_ROUTE_LENGTH = 2;
     private final String DELIMITER = "/";
 
+    /**
+     * Iterates a route--the input string--in a pre-determined
+     * order.
+     * <p>
+     * Assume the requested route is '/projects/sviewer/images/lock.png'.
+     * This iterator will "return" these subroutes in the 
+     * specified order:
+     * </p>
+     * <ol>
+     * <li>/projects/sviewer/images/lock.png</li>
+     * <li>/projects/sviewer/images</li>
+     * <li>/projects/sviewer</li>
+     * <li>/projects</li>
+     * </ol>
+     * @author Tuomas Pellonperä
+     *
+     */
     private class RouteIterator implements Iterator<String> {
 
         public RouteIterator(String input) {

@@ -24,6 +24,13 @@ import database.GeneNameDatabase;
 import database.HgncData;
 import database.VariantDatabase;
 
+/**
+ * This class handles requests which need queries to a variant 
+ * database.
+ * 
+ * @author Tuomas PellonperŠ
+ *
+ */
 public class VariantHandler extends BaseHandler {
 
     public VariantHandler() {

@@ -30,6 +30,13 @@ import org.eclipse.jetty.server.Request;
 
 import security.FileAccessControl;
 
+/**
+ * This class handles requests to static files
+ * (e.g. JavaScript files, CSS files, etc).
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class StaticFileHandler extends BaseHandler {
     public StaticFileHandler() {
         super();
@@ -45,7 +52,7 @@ public class StaticFileHandler extends BaseHandler {
     }
 
     /* ------------------------------------------------------------ */
-    /*
+    /**
      * @see
      * org.eclipse.jetty.server.Handler#handle(javax.servlet.http.HttpServletRequest
      * , javax.servlet.http.HttpServletResponse, int)

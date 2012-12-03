@@ -16,7 +16,8 @@ import database.DatabaseQueryResult;
 import database.GeneNameDatabase;
 
 /**
- * This class handles requests related to gene names.
+ * This class handles requests related to gene names (requests
+ * which involve queries to a gene name database).
  * 
  * @author Tuomas Pellonperä
  *
