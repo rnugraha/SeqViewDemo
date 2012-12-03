@@ -5,6 +5,9 @@ FimmWidgets.util = {};        // For utility functions.
 
 (function(fw) {
 
+  /*
+   * Returns true if the first parameter is an array object.
+   */
   fw.util.isArray = (function() {
     if (Array.isArray && typeof Array.isArray === 'function'){
       return Array.isArray;
@@ -38,7 +41,7 @@ FimmWidgets.util = {};        // For utility functions.
   }());
 
   /* 
-   * List "local" properties of an object. 
+   * List "local" properties of an object (and return them as an array).
    * http://stackoverflow.com/questions/208016/how-to-list-the-properties-of-a-javascript-object
    */
   fw.util.properties = (function() {
@@ -69,6 +72,12 @@ FimmWidgets.util = {};        // For utility functions.
       return result;
     };
   })();
+
+  /*
+   * Functions 'loadDynamicFile', 'doLoading', and 'loadDynamically' are used to load
+   * JavaScript and CSS files dynamically. This saves the user from the trouble of 
+   * specifying the files by hand (and inserting the required code into the HTML page).
+   */
 
   // http://software.intel.com/en-us/blogs/2010/05/22/dynamically-load-javascript-with-load-completion-notification/
 
@@ -154,6 +163,16 @@ FimmWidgets.util = {};        // For utility functions.
     }
   }; 
     
+  /*
+   * This is the "starting point" of loading files dynamically. You need to call 
+   * this function on your HTML page (see fimmwidget.html for an example).
+   *
+   * You don't need to give this function any parameters. When called without 
+   * parameters, a default list of files will be used. If you do call this function
+   * with parameter(s), an ARRAY parameter will be used a list of files to be 
+   * loaded, and an OBJECT parameter will be used as a configuration object which
+   * will be feeded to the sequence viewer.
+   */
   function loadDynamically(){
 
     var args = arguments;
@@ -200,6 +219,7 @@ FimmWidgets.util = {};        // For utility functions.
     }
   }
 
+  // Make 'loadDynamically' publicly available.
   fw.loadDynamically = loadDynamically;
 
   function defaultConfig(config) {
@@ -266,6 +286,9 @@ FimmWidgets.util = {};        // For utility functions.
     return config;
   }
 
+  /*
+   * Create the necessary div elements on the HTML page.
+   */
   function createDivs(conf) {
     var ids = new Array(conf.containerDivId,    // MUST be first!
                         conf.searchFormDivId,
@@ -318,6 +341,11 @@ FimmWidgets.util = {};        // For utility functions.
     } 
   }
 
+  /*
+   * This function does the "heavy lifting" of variant search. It can be
+   * called by pressing the search button, or by pressing the Enter key 
+   * in the search text field.
+   */
   function doSearch(appConfig) {
     var geneName = Ext.getCmp(appConfig.geneSearchComboboxId).getValue();
     var grid = Ext.get(appConfig.variantGridId);
@@ -381,6 +409,10 @@ FimmWidgets.util = {};        // For utility functions.
         },
         loadMask: true,
         listeners: {
+          /*
+           * This callback function is called whenever variants are selected 
+           * or de-selected on the displayed grid.
+           */
           selectionchange: {
             fn: function(rowModel, selected, eOpts) {
               var btn = Ext.getCmp(svbtnId);
@@ -441,6 +473,7 @@ FimmWidgets.util = {};        // For utility functions.
             sortable: false
           }
         ],
+        // Toolbar
         tbar: [
           {
             text: 'Display',
@@ -455,6 +488,7 @@ FimmWidgets.util = {};        // For utility functions.
                   text: 'SeqView',
                   disabled: true,
                   listeners: {
+                    // Callback for clicking the search button.
                     click: function(){
                       var selected = fw.shared.selected;
 
@@ -589,6 +623,9 @@ FimmWidgets.util = {};        // For utility functions.
       'Ext.ux.PreviewPlugin'
     ]);
 
+    /*
+     * Used for rendering values on the variant grid.
+     */
     Ext.define('ValueRenderer', (function(base) {
       return {
         'renderVariantGenes': function(value, p, record) {
@@ -733,6 +770,9 @@ FimmWidgets.util = {};        // For utility functions.
 
     /*********** Widgets **********/
 
+    /*
+     * Class for the search box (with auto-completion).
+     */
     Ext.define('GeneComboBox', {
       extend: 'Ext.form.field.ComboBox',
       alias: ['widget.gene-combobox'],
@@ -748,6 +788,9 @@ FimmWidgets.util = {};        // For utility functions.
       }
     });
 
+    /*
+     * Class for the whole search component.
+     */
     Ext.define('GeneSearchComponent', {
       extend: 'Ext.panel.Panel',
       alias: 'widget.gene-search-component',
@@ -798,6 +841,7 @@ FimmWidgets.util = {};        // For utility functions.
       ]
     });
 
+    // Fire up the application!
     Ext.application({
       name: 'FW',
       launch: function() {
