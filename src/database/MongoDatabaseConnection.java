@@ -7,6 +7,12 @@ import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
+/**
+ * A class representing a connection to a MongoDB database.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class MongoDatabaseConnection extends DatabaseConnection {
     
     public MongoDatabaseConnection(DatabaseConfig config)

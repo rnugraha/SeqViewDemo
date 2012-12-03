@@ -8,6 +8,13 @@ import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+/**
+ * A serializable class for 
+ * <a href="http://www.genenames.org/">HGNC</a> data.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class HgncData
        extends java.util.AbstractMap<String, Object>
        implements Serializable {

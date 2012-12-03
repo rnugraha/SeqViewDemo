@@ -126,6 +126,13 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         return result;
     }
     
+    /**
+     * Determine if the document is equivalent to the gene.
+     * 
+     * @param d     OrientDB document
+     * @param gene  approved symbol (accession) of the gene to be matched against
+     * @return      true if document "matches" the gene
+     */
     private boolean matches(ODocument d, String gene) {
         @SuppressWarnings("rawtypes")
         ArrayList<LinkedHashMap> l = d.field("genes");
@@ -138,6 +145,12 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         return false;
     }
 
+    /**
+     * "Cast" an OrientDB document to a java.util.Map.
+     * 
+     * @param d         document to cast
+     * @return          document cast into java.util.Map
+     */
     private Map<String, Object> doc2map(ODocument d) {
         String[] fields = d.fieldNames();
         Map<String, Object> m = new HashMap<String, Object>();
@@ -147,6 +160,9 @@ public class VariantDatabaseInMemory extends VariantDabaseCommon {
         return m;
     }
     
+    /**
+     * Establish a connection to the database, or initialize the database.
+     */
     private void initdb() {
         database = new ODatabaseDocumentTx(DATABASE_NAME).create();
         database.addCluster(CLUSTER_NAME, OStorage.CLUSTER_TYPE.MEMORY);

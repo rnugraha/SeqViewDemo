@@ -38,7 +38,7 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         this(DEFAULT_HGNC_DATA);
     }
 
-    public GeneNameDatabaseInMemory(DatabaseConfig conf) {
+    public GeneNameDatabaseInMemory(DatabaseConfig unused) {
         this(DEFAULT_HGNC_DATA);
     }
 
@@ -93,6 +93,12 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         return hgnc;
     }
     
+    /**
+     * "Cast" an OrientDB document to a java.util.Map.
+     * 
+     * @param doc       document to cast
+     * @return          document cast into java.util.Map
+     */
     private Map<String, Object> doc2map(ODocument doc) {
         String[] properties = doc.fieldNames();
         HashMap<String, Object> map = new HashMap<String, Object>(properties.length);
@@ -103,6 +109,9 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         return map;
     }
     
+    /**
+     * Establish a database connection.
+     */
     private void initdb() {
         database = new ODatabaseDocumentTx(DATABASE_NAME).create();
         database.addCluster(CLUSTER_NAME, OStorage.CLUSTER_TYPE.MEMORY);
@@ -129,6 +138,13 @@ public class GeneNameDatabaseInMemory implements GeneNameDatabase {
         dbInMemory = true;
     }
     
+    /**
+     * Get an absolute path name for file name.
+     * 
+     * @param filename      filename relative to the directory
+     *                      the webserver was launched from
+     * @return              the absolute path
+     */
     private static String abspath(String filename) {
         return HOMEDIR.concat(SEPARATOR).concat(filename);
     }

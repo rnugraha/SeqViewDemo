@@ -10,6 +10,12 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
 
+/**
+ * Class for GeneNameDatabase using the MongoDB database system.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class GeneNameDatabaseMongoDB implements GeneNameDatabase {
 
     public GeneNameDatabaseMongoDB(DatabaseConfig config) 

@@ -1,5 +1,11 @@
 package database;
 
+/**
+ * A common base class for variant databases.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public abstract class VariantDabaseCommon implements VariantDatabase {
 
     public VariantDabaseCommon(GeneNameDatabase geneDb) {
@@ -12,6 +18,12 @@ public abstract class VariantDabaseCommon implements VariantDatabase {
         geneDb = null;
     }
     
+    /**
+     * Get the Ensembl ID of the gene.
+     * 
+     * @param gene      symbol name of the gene
+     * @return          Ensembl ID corresponding to the symbol
+     */
     public String getEnsemblId(String gene) {
         HgncData hgnc = geneDb.getHgncData(gene);
         String id = (String) hgnc.get("ensembl_id_ensembl");

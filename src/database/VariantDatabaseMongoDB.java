@@ -13,6 +13,12 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+/**
+ * Variant database using the MongoDB database system.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class VariantDatabaseMongoDB extends VariantDabaseCommon implements VariantDatabase {
 
     public VariantDatabaseMongoDB(DatabaseConfig config) 

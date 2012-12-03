@@ -8,6 +8,13 @@ import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+/**
+ * Class for database query results. Essentially, this class is
+ * a subclass of java.util.Map.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class DatabaseQueryResult
        extends java.util.AbstractMap<String, Object>
        implements Serializable {

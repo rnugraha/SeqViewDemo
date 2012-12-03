@@ -1,4 +1,5 @@
 package network;
+
 import handlers.GeneNameHandler;
 import handlers.NcbiHandler;
 import handlers.RoutingHandler;
@@ -19,6 +20,18 @@ import database.GeneNameDatabaseMongoDB;
 import database.VariantDatabase;
 import database.VariantDatabaseInMemory;
 import database.VariantDatabaseMongoDB;
+
+/**
+ * This class embeds the 
+ * <a href="http://www.eclipse.org/jetty/">Jetty</a> webserver 
+ * into the application. It is the starting point of the
+ * custom made web server which provides users with an interface
+ * to searching gene variants and access to 
+ * <a href="http://www.ensembl.org/index.html">Ensembl</a> website and
+ * <a href="http://www.ncbi.nlm.nih.gov/projects/sviewer/">NCBI Sequence Viewer</a>.
+ * 
+ * @author Tuomas Pellonperä
+ */
 
 public class ServerApplication {
     public static void main(String[] args) {
@@ -106,6 +119,7 @@ public class ServerApplication {
         geneHandler.setDatabase(geneDb);
         variantHandler.setGeneNameDatabase(geneDb);
 
+        // Associate routes with handlers.
         router.bind(Routes.GENES,               geneHandler);
         router.bind(Routes.NCBISV,              ncbiHandler);
         router.bind(Routes.NCBI_IMAGES,         ncbiHandler);
