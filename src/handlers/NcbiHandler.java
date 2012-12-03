@@ -18,6 +18,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.jetty.server.Request;
 
+/**
+ * This class handles requests related to fething files necessary
+ * to the <a href="http://www.ncbi.nlm.nih.gov/projects/sviewer/">Sequence
+ * Viewer</a>.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class NcbiHandler extends BaseHandler {
 
     @Override
@@ -74,6 +82,15 @@ public class NcbiHandler extends BaseHandler {
 
     }
 
+    /**
+     * Encode the "illegal" characters in the query string
+     * (part of the URL). For more info, read the 
+     * <a href="http://en.wikipedia.org/wiki/URL_encoding">Wikipedia</a>
+     * page.
+     * 
+     * @param query     query string to encode
+     * @return          encoded query string
+     */
     private String encodeCharacters(String query) {
         String s = query.replace(" ", "%20") 
                         .replace("\\", "%5C")
@@ -92,6 +109,15 @@ public class NcbiHandler extends BaseHandler {
         return s;
     }
     
+    /**
+     * Make an URL by substituting the first occurence of ROUTE in
+     * PATH with the URL. 
+     * 
+     * @param path      the original path
+     * @param route     route to be removed (at least the first occurence)
+     * @param url       URL to add as a prefix
+     * @return          created URL
+     */
     private String makeUrl(String path, String route, String url) {
         String file = path.replaceFirst(route, "");
         

@@ -15,17 +15,45 @@ import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+/**
+ * To produce a response to a request, Jetty requires a 
+ * <a href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/server/Handler.html">Handler</a> 
+ * to be set on the server. 
+ * <p>A handler may</p>
+ * <ul>
+ * <li>examine/modify the HTTP request.</li>
+ * <li>generate the complete HTTP response. </li>
+ * <li>call another Handler.</li>
+ * <li>select one or many Handlers to call.</li>
+ * </ul>
+ * <p>This class is the base class for other handlers in this application. 
+ * The subclasses must implement the 'handle' method.</p>
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public abstract class BaseHandler extends AbstractHandler {
     
     public BaseHandler() {
         super();
         this.handled = false;
     }
-    
+
+    /**
+     * An object of the RoutingHandler attaches the matched route 
+     * to the corresponding handler.
+     * 
+     * @return  the associated/matched route
+     */
     protected final String getRoute() {
         return myRoute;
     }
 
+    /**
+     * Set the associated/matched route.
+     * 
+     * @param route     the route this handler was matched with
+     */
     protected final void setRoute(String route) {
         this.myRoute = route;
     }
@@ -39,6 +67,18 @@ public abstract class BaseHandler extends AbstractHandler {
         return handled;
     }
 
+    /**
+     * Sends a stream as a response to the request.
+     * 
+     * @param input         stream to be sent
+     * @param mime          MIME type
+     * @param length        length of the (byte) stream
+     * @param baseRequest   base request
+     * @param request       the request the stream is sent as the
+     *                      response to
+     * @param response      the response to be sent
+     * @throws IOException
+     */
     protected void sendStream(InputStream input, 
                               String mime, 
                               long length,
@@ -51,6 +91,17 @@ public abstract class BaseHandler extends AbstractHandler {
 
     }
 
+    /**
+     * Send the file as a response to the request.
+     * 
+     * @param file          file to be sent
+     * @param mime          MIME type of the file
+     * @param baseRequest   base request
+     * @param request       the request the file is sent as the
+     *                      response to
+     * @param response      the response to be sent
+     * @throws IOException
+     */
     protected void sendFile(File file, 
                             String mime, 
                             Request baseRequest,
@@ -63,6 +114,17 @@ public abstract class BaseHandler extends AbstractHandler {
 
     }
 
+    /**
+     * Send a character string as the response to the request.
+     * 
+     * @param string        string to be sent
+     * @param mime          MIME type of the string
+     * @param baseRequest   base request
+     * @param request       the request the string is sent as the
+     *                      response to
+     * @param response      response to be sent
+     * @throws IOException
+     */
     protected void sendString(String string, 
                               String mime, 
                               Request baseRequest,
@@ -75,6 +137,19 @@ public abstract class BaseHandler extends AbstractHandler {
         
     }
 
+    /**
+     * Send the stream, of the specified length, as the response 
+     * to the request.
+     * 
+     * @param input         stream to be sent
+     * @param mime          MIME type of the stream
+     * @param length        length of the stream
+     * @param baseRequest   base request
+     * @param request       the request the stream is sent as the
+     *                      response to
+     * @param response      response to be sent
+     * @throws IOException
+     */
     private void send(InputStream input, 
                       String mime, 
                       long length,

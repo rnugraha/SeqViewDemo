@@ -15,6 +15,12 @@ import org.eclipse.jetty.server.Request;
 import database.DatabaseQueryResult;
 import database.GeneNameDatabase;
 
+/**
+ * This class handles requests related to gene names.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class GeneNameHandler extends BaseHandler {
 
     public GeneNameHandler() {
