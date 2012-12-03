@@ -119,9 +119,9 @@ public class VariantHandler extends BaseHandler {
                 String gene = params.get("gene")[0];
                 gene = gene.split(" ", 2)[0];
                 
-                pageNumber = setParam(params, "page", DEFAULT_PAGE);
-                skip = setParam(params, "start", DEFAULT_SKIP, true);
-                limit = setParam(params, "limit", DEFAULT_LIMIT);
+                pageNumber = paramValue(params, "page", DEFAULT_PAGE);
+                skip = paramValue(params, "start", DEFAULT_SKIP, true);
+                limit = paramValue(params, "limit", DEFAULT_LIMIT);
                 
                 DatabaseQueryResult data = db.getVariantsData(gene, skip, limit);
                 long count = (Long) data.get("total_count");
@@ -162,15 +162,15 @@ public class VariantHandler extends BaseHandler {
         }
     }
 
-    private int setParam(Map<String, String[]> params,
+    private int paramValue(Map<String, String[]> params,
                         String name,
                         int defaultValue) {
         
-        return setParam(params, name, defaultValue, true /* zero allowed */);
+        return paramValue(params, name, defaultValue, true /* zero allowed */);
         
     }
     
-    private int setParam(Map<String, String[]> params,
+    private int paramValue(Map<String, String[]> params,
                           String name,
                           int defaultValue,
                           boolean zeroAllowed) {
