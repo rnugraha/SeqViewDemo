@@ -155,7 +155,6 @@ FimmWidgets.util = {};        // For utility functions.
   }; 
     
   function loadDynamically(){
-    // http://stackoverflow.com/questions/4775722/javascript-check-if-object-is-array
 
     var args = arguments;
     var isArray = fw.util.isArray;
@@ -357,11 +356,7 @@ FimmWidgets.util = {};        // For utility functions.
         autoLoad: true,
         remoteSort: true,
         proxy: {
-          // load using script tags for cross domain, if the data in on the same domain as
-          // this page, an HttpProxy would be better
           type: 'ajax',
-          // /learning_extjs/extjs/examples/grid/variants?_dc=1347428880556&page=1&start=0&limit=50&sort=lastpost&dir=DESC&callback=Ext.data.JsonP.callback1
-          // /learning_extjs/extjs/examples/grid/variants
           url: '/variants',
           reader: {
             root: 'variants',
@@ -510,7 +505,6 @@ FimmWidgets.util = {};        // For utility functions.
 
                           conf.start = start;
                           conf.end = end;
-                          //conf.id = variant.ref_seq.accession;
                           conf.id = variant.locations[0].ref_seq.accession;
                           if (conf.end - conf.start < 100) {
                             (function(c) {
@@ -526,11 +520,6 @@ FimmWidgets.util = {};        // For utility functions.
                           }
                           conf.mk = Ext.String.format('{0}:{1}|{2}|{3}',
                                                       start, end, marker, color);
-                          /*
-                          conf.mk = String(start).concat(':')
-                                                  .concat(end)
-                                                  .concat("|MarkerName|00ff00");
-                          */
 
                           if (!win || win.closed === true) {
                             win = window.open('http://localhost:8080/index.html', '_blank');
@@ -608,16 +597,13 @@ FimmWidgets.util = {};        // For utility functions.
           }
           if (value.length === 1) {
             var elem = value[0];
-            //return Ext.String.format('{0} ({1})', elem["accession"], elem["source"]);
             return Ext.String.format('{0}', elem["accession"]);
           }
           return Ext.String.format('<b>{0}</b>', 'Details');
         },
 
         'renderName': function(value, p, record) {
-          //var uri = record['data'].uri;
           var name = Ext.htmlDecode(value['string']);
-          //var link = Ext.String.format('<a href="{0}" target="_blank"><b>{1}</b></a>', uri, name);
           var link = name;
           return link;
         },
@@ -747,15 +733,11 @@ FimmWidgets.util = {};        // For utility functions.
 
     /*********** Widgets **********/
 
-    // http://stackoverflow.com/questions/6609275/extjs-4-how-to-extend-extjs-4-components
-    // http://stackoverflow.com/questions/6181614/calling-lifecycle-template-methods-in-extjs-4
-    // http://stackoverflow.com/questions/11323023/render-dynamic-components-in-extjs-4-gridpanel-column-with-ext-create
     Ext.define('GeneComboBox', {
       extend: 'Ext.form.field.ComboBox',
       alias: ['widget.gene-combobox'],
 
       constructor: function(cnfg) {
-        //this.callParent(arguments);
         this.callParent([cnfg]);
         this.initConfig(cnfg);
         this.store = Ext.create('GeneNameStore');
@@ -832,24 +814,3 @@ FimmWidgets.util = {};        // For utility functions.
 
 }(FimmWidgets));
 
-/*
-  Requested path: /learning_extjs/extjs/examples/form/dynamic.html
-  Requested path: /learning_extjs/extjs/resources/css/ext-all.css
-  Requested path: /learning_extjs/extjs/ext-all.js
-  Requested path: /learning_extjs/extjs/examples/form/dynamic-gene1.js
-  Requested path: /learning_extjs/extjs/examples/shared/example.css
-  Requested path: /learning_extjs/extjs/examples/ux/PreviewPlugin.js
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/form/trigger.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/form/exclamation.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/tools/tool-sprites.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/form/text-bg.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/loading.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/button/arrow.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/page-first-disabled.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/page-prev-disabled.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/page-next-disabled.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/page-last-disabled.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/refresh.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/page-next.gif
-  Requested path: /learning_extjs/extjs/resources/themes/images/default/grid/page-last.gif
-*/
