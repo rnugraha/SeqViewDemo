@@ -5,6 +5,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class QueryStringBuilder {
+    
+    /**
+     * Build a query string.
+     * 
+     * @param map       java.util.Map to build the query string from
+     * @return          the manufactured query string
+     */
     public static String build(Map<String, String[]> map) {
         StringBuilder buf = new StringBuilder();
         Set<String> keys = map.keySet();

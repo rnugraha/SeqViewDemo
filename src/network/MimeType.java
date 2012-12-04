@@ -2,6 +2,12 @@ package network;
 
 import java.util.Hashtable;
 
+/**
+ * This class deals with <a href="http://en.wikipedia.org/wiki/MIME">MIME types</a>.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class MimeType {
     private MimeType() {}
     
@@ -31,9 +37,6 @@ public class MimeType {
     public static final String SVG          = "image/svg+xml";
     public static final String TXT          = "text/plain";
     public static final String XML          = "text/xml";
-    
-    // Ruby script:
-    // puts s.gsub(/mimeTypes.put\("(\w+)",(\s+)"[^"]+"\);/) { sprintf('mimeTypes.put("%s",%sMimeType.%s);', $1, $2, $1.upcase) }
     
     static {
         mimeTypes.put("css",        CSS);

@@ -7,6 +7,13 @@ import org.eclipse.jetty.http.HttpURI;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.util.MultiMap;
 
+/**
+ * Abstraction over a URL. Extracts some useful information
+ * from the Request object.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class URL {
     
     public URL(Request request) {
@@ -21,6 +28,13 @@ public class URL {
         return paths.get(0);
     }
     
+    /**
+     * Return the <em>i</em>:th path component.
+     * 
+     * @param i     index 
+     * @return      <em>i</em>:th component, or an empty string 
+     *              if the index value is invalid
+     */
     public String getPathComponent(int i) {
         if (paths.size() <= i) {
             return "";

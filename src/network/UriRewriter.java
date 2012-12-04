@@ -6,6 +6,17 @@ import java.util.Vector;
 
 import org.eclipse.jetty.http.HttpMethods;
 
+/**
+ * Rewrite URIs. Change one URI into another.
+ * URIs are distinguished based on the HTTP method
+ * (GET, POST, etc.). They can be rewritten either
+ * fully (static rules), or just their prefix can
+ * be rewritten (prefix rules).
+ * <p>Static rules take precedence over prefix ones.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class UriRewriter {
     
     public UriRewriter() {
@@ -18,14 +29,35 @@ public class UriRewriter {
         random = new Random(708833134193L);
     }
     
+    /**
+     * Rewrite the URI assuming it uses the HTTP GET method.
+     * 
+     * @param uri   URI to be rewritten
+     * @return      rewritten URI
+     */
     public String rewrite(String uri) {
         return rewrite(HttpMethods.GET, uri);
     }
     
+    /**
+     * Rewrite the URI, making no assumptions on the HTTP method.
+     * <p>If both a static rule and a prefix rule match the URI,
+     * then the URI is rewritten based on the <em>static</em>
+     * rule.
+     * <p>If several prefix rules match the URI, then the 
+     * <em>longest</em> one will be used to rewrite the URI.
+     * <p>If no rule matches the URI, then it will be returned
+     * <em>unmodified</em>.
+     * 
+     * @param method    HTTP method
+     * @param uri       URI to be written
+     * @return          rewritten URI (or if no matching rules are found, 
+     *                  then the input URI will be returned)
+     */
     public String rewrite(String method, String uri) {
 
         // First, check if there's a static rule.
-        // Static rules take precedence over dynamic rules.
+        // Static rules take precedence over prefix rules.
         if (staticRules.containsKey(method)) {
             HashMap<String, String> map = staticRules.get(method);
             if (map.containsKey(uri)) {
@@ -33,7 +65,7 @@ public class UriRewriter {
             }
         }
 
-        // No static rule, so check if there's a dynamic one.
+        // No static rule, so check if there's a prefix one.
         if (prefixRules.containsKey(method)) {
             Vector<String> v = prefixRules.get(method);
             String prefix = "";    // The longest prefix.
@@ -59,10 +91,23 @@ public class UriRewriter {
         return uri;
      }
     
+    /**
+     * Add a prefix rule for the HTTP GET method.
+     * 
+     * @param from      original string
+     * @param to        replacement string
+     */
     public void addPrefixRule(String from, String to) {
         addPrefixRule(HttpMethods.GET, from, to);
     }
 
+    /**
+     * Add a prefix rule for the specified HTTP method.
+     * 
+     * @param method    HTTP method (GET, POST, etc)
+     * @param from      original string
+     * @param to        replacement string
+     */
     public void addPrefixRule(String method, String from, String to) {
         if (! prefixRules.containsKey(method)) {
             prefixRules.put(method, new Vector<String>());
@@ -79,10 +124,23 @@ public class UriRewriter {
         }
     }
 
+    /**
+     * Add a static rule for the HTTP GET method.
+     * 
+     * @param from      original string
+     * @param to        replacement string
+     */
     public void addStaticRule(String from, String to) {
         addStaticRule(HttpMethods.GET, from, to);
     }
 
+    /**
+     * Add a static rule for the specified HTTP method.
+     * 
+     * @param method    HTTP method (GET, POST, etc)
+     * @param from      original string
+     * @param to        replacement string
+     */
     public void addStaticRule(String method, String from, String to) {
         if (! staticRules.containsKey(method)) {
             staticRules.put(method, new HashMap<String, String>());

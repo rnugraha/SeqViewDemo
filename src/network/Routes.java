@@ -1,5 +1,11 @@
 package network;
 
+/**
+ * Routes for the web server.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class Routes {
     public static final String NCBI_EXTJS       = "/core/extjs/ext-3.4.0";
     public static final String GENES            = "/genes";
