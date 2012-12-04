@@ -1,11 +1,30 @@
 package security;
 
+/**
+ * Combat security vulnerabilities arising from 
+ * <a href="http://en.wikipedia.org/wiki/SQL_injection">SQL injections</a>.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class SqlParameter {
     
     public static boolean sqlInjectionResistant(String s) {
         return sqlInjectionResistant(s, EVERYTHING);    
     }
     
+    /**
+     * Check that the input string contains only characters which
+     * the mode allows.
+     * <p>Single modes, such as the one for lowercase letters,
+     * are represented as integers. You can "chain" them together
+     * using the bitwise OR operator ('|' in Java).
+     * 
+     * @param s     input string
+     * @param mode  the mode
+     * @return      true, if the input string does not contain
+     *              <em>illegal</em> characters; false otherwise
+     */
     public static boolean sqlInjectionResistant(String s, int mode) {
         StringBuilder classes = new StringBuilder();
         
@@ -41,19 +60,67 @@ public class SqlParameter {
         return s.matches(pattern);
     }
     
+    /**
+     * Mode for uppercase letters ('A', 'B', ..., 'Z').
+     */
     public static final int UPPERCASE;
+    
+    /**
+     * Mode for lowercase letters ('a', 'b', ..., 'z').
+     */
     public static final int LOWERCASE;
+    
+    /**
+     * Mode for digits (0, 1, ..., 9).
+     */
     public static final int NUMBERS;
+    
+    /**
+     * Mode for '-'.
+     */
     public static final int HYPHEN;
+    
+    /**
+     * Mode for space (' ').
+     */
     public static final int SPACE;
+    
+    /**
+     * Mode for normal parenthesis ('(', ')').
+     */
     public static final int PARENTHESES;
+    
+    /**
+     * Mode for brackets ('[', ']').
+     */
     public static final int BRACKETS;
+    
+    /**
+     * Mode for curly braces ('{', '}').
+     */
     public static final int BRACES;
+    
+    /**
+     * Mode for comma (',').
+     */
     public static final int COMMA;
     
+    /**
+     * Mode for alphabetical letters (e.g. uppercase
+     * and lowercase letters).
+     */
     public static final int ALPHABET;
+    
+    /**
+     * Mode for alpha-numeric characters
+     * (e.g. lowercase and uppercase letters, digits).
+     */
     public static final int ALPHANUMERIC;
     
+    /**
+     * Allow <strong>any</strong> type of character. 
+     * <p><em>Use at your own risk!</em>
+     */
     public static final int EVERYTHING = Integer.MAX_VALUE;
     
     static {
