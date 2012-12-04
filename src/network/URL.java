@@ -25,7 +25,7 @@ public class URL {
     }
     
     public String getRoute() {
-        return paths.get(0);
+        return getPathComponent(0);
     }
     
     /**
@@ -36,10 +36,13 @@ public class URL {
      *              if the index value is invalid
      */
     public String getPathComponent(int i) {
-        if (paths.size() <= i) {
+        if (i < 0) {
             return "";
         }
-        return paths.get(i);
+        if (i < paths.size()) {
+            return paths.get(i);
+        }
+        return "";
     }
 
     @Override
