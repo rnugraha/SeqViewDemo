@@ -1,9 +1,16 @@
 package security;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Control access to the file system.
+ * 
+ * @author Tuomas Pellonperä
+ *
+ */
 public class FileAccessControl {
 
     public FileAccessControl(String rootPath) {
@@ -27,12 +34,36 @@ public class FileAccessControl {
             if (f.exists() == false) {
                 return FILE_NOT_FOUND;
             }
+            if (underRoot(f) == false) {
+                return ACCESS_DENIED;
+            }
             if (f.isFile() == false || f.canRead() == false) {
                 return ACCESS_DENIED;
             }
             return ACCESS_ALLOWED;
         } catch (URISyntaxException e) {
             return FILE_NOT_FOUND;
+        }
+    }
+    
+    /**
+     * Make sure that the input file is located either under 
+     * the root directory, or under its subdirectories.
+     * <p>The purpose is to prevent access to files outside 
+     * the root directory.
+     * 
+     * @param f     input file
+     * @return      true, the root directory is an ancestor (i.e. parent directory) 
+     *              of the input file; false otherwise
+     */
+    private boolean underRoot(File f) {
+        String rootPath;
+        try {
+            rootPath = rootDir.getCanonicalPath();
+            String path = f.getCanonicalPath();
+            return path.startsWith(rootPath);
+        } catch (IOException e) {
+            return false;
         }
     }
     
