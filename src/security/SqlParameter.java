@@ -69,17 +69,17 @@ public class SqlParameter {
     }
     
     /**
-     * Mode for uppercase letters ('A', 'B', ..., 'Z').
+     * Mode for the uppercase letters ('A', 'B', ..., 'Z').
      */
     public static final int UPPERCASE;
     
     /**
-     * Mode for lowercase letters ('a', 'b', ..., 'z').
+     * Mode for the lowercase letters ('a', 'b', ..., 'z').
      */
     public static final int LOWERCASE;
     
     /**
-     * Mode for digits (0, 1, ..., 9).
+     * Mode for the digits (0, 1, ..., 9).
      */
     public static final int NUMBERS;
     
@@ -89,38 +89,38 @@ public class SqlParameter {
     public static final int HYPHEN;
     
     /**
-     * Mode for space (' ').
+     * Mode for the space (' ').
      */
     public static final int SPACE;
     
     /**
-     * Mode for normal parenthesis ('(', ')').
+     * Mode for the normal parenthesis ('(', ')').
      */
     public static final int PARENTHESES;
     
     /**
-     * Mode for brackets ('[', ']').
+     * Mode for the brackets ('[', ']').
      */
     public static final int BRACKETS;
     
     /**
-     * Mode for curly braces ('{', '}').
+     * Mode for the curly braces ('{', '}').
      */
     public static final int BRACES;
     
     /**
-     * Mode for comma (',').
+     * Mode for the comma (',').
      */
     public static final int COMMA;
     
     /**
-     * Mode for alphabetical letters (e.g. uppercase
+     * Mode for the alphabetical letters (e.g. uppercase
      * and lowercase letters).
      */
     public static final int ALPHABET;
     
     /**
-     * Mode for alpha-numeric characters
+     * Mode for the alpha-numeric characters
      * (e.g. lowercase and uppercase letters, digits).
      */
     public static final int ALPHANUMERIC;
