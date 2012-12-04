@@ -9,8 +9,16 @@ package security;
  */
 public class SqlParameter {
     
+    /**
+     * Check that the input string contains only alpha-numeric
+     * characters.
+     * 
+     * @param s     input string
+     * @return      true, if the input string contains only 
+     *              alpha-numeric characters; false otherwise
+     */
     public static boolean sqlInjectionResistant(String s) {
-        return sqlInjectionResistant(s, EVERYTHING);    
+        return sqlInjectionResistant(s, ALPHANUMERIC);    
     }
     
     /**
