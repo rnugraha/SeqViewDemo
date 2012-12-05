@@ -24,6 +24,9 @@ FimmWidgets.util = {};        // For utility functions.
   /*
    * Equivalent to Object.create.
    * https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/create
+   *
+   * As JavaScript uses prototypes rather than classes for inheritance, this function
+   * is the preferred way to create objects (therefore, don't use 'new').
    */
   fw.util.create = (function() {
     if (! Object.create || typeof Object.create !== 'function') {
@@ -77,10 +80,30 @@ FimmWidgets.util = {};        // For utility functions.
    * Functions 'loadDynamicFile', 'doLoading', and 'loadDynamically' are used to load
    * JavaScript and CSS files dynamically. This saves the user from the trouble of 
    * specifying the files by hand (and inserting the required code into the HTML page).
+   *
+   * The function 'loadDynamically' sets the ball rolling; i.e. this function calls the
+   * other two functions. It is recommended that the other two functions are *not* 
+   * called externally.
+   *
+   * The functions 'loadDynamicFile' and 'doLoading' call each other in a circular
+   * fashion.
    */
 
-  // http://software.intel.com/en-us/blogs/2010/05/22/dynamically-load-javascript-with-load-completion-notification/
-
+  /**
+   * Load the file at fileURL. (This variable is not used in this method, 
+   * because the same value is found in one of properties of the 'props' 
+   * object.)
+   *
+   * @param fileURL       The URL of the file to be loaded
+   * @param props         An object which has the data necessary for creating 
+   *                      a new element in the HEAD section of the document.
+   * @param params        An object which has, among other things, the list of 
+   *                      files pending loading. We feed this to the 
+   *                      'doLoading' function.
+   *
+   * The following resource was used to aid in writing this function.
+   * http://software.intel.com/en-us/blogs/2010/05/22/dynamically-load-javascript-with-load-completion-notification/
+   */
   function loadDynamicFile(fileURL, props, params) {
 
     var onloadCallback = function(){
@@ -120,6 +143,12 @@ FimmWidgets.util = {};        // For utility functions.
 
   }
 
+  /**
+   * If there are more files to load, create an object which has the necessary 
+   * data to create a DOM element, and call 'loadDynamicFile'. Otherwise, call
+   * the "finalizer" function to signal that all the desired files have been
+   * loaded dynamically.
+   */
   function doLoading(params){
 
     var files = params.files;
@@ -148,13 +177,23 @@ FimmWidgets.util = {};        // For utility functions.
     var file;
     
     if (files.length > 0){
+
       file = files.pop();
       loadDynamicFile(file, getProps(file), params);
+
     } else {
+
+      // No more files to load. Now it's time to call the "onready" function.
+
       if (typeof params.onready === 'function') {
         if (document.readyState === 'complete') {
           params.onready.call(null, params.config);
         } else {
+
+          /*
+           * TODO It would preferable if we could avoid using here any 
+           * functions defined by Ext JS.
+           */
           Ext.onReady(function() {
             params.onready.apply(null, params.config);
           }, null, true);
@@ -172,6 +211,9 @@ FimmWidgets.util = {};        // For utility functions.
    * with parameter(s), an ARRAY parameter will be used a list of files to be 
    * loaded, and an OBJECT parameter will be used as a configuration object which
    * will be feeded to the sequence viewer.
+   *
+   * You can give this function BOTH an array AND an object as parameters, but 
+   * make sure the array parameter is the first parameter.
    */
   function loadDynamically(){
 
@@ -205,14 +247,24 @@ FimmWidgets.util = {};        // For utility functions.
     }
 
     params = {
+      // The function to call when all the files have been loaded
       onready: launch,
-      config: conf
+
+      // An object to give as parameter to 'onready' member function
+      config: conf,
+
+      // An array of files to load. Note that for efficiency reasons, we will
+      // be popping files from the end.
+      files: null
     };
 
     if (typeof files === 'string'){
       files = [files];
     }
+
     if (isArray(files) === true){
+      // Reverse the file array so that we can remove them one at a time from 
+      // the end in an efficient manner.
       files.reverse();
       params.files = files;
       doLoading(params);
@@ -222,7 +274,15 @@ FimmWidgets.util = {};        // For utility functions.
   // Make 'loadDynamically' publicly available.
   fw.loadDynamically = loadDynamically;
 
+  /**
+   * Supplement the parameter object with the necessary properties (and 
+   * assign a default value to them) if it doesn't already have them. 
+   * The object returned will be used to configure the application.
+   */
   function defaultConfig(config) {
+
+    // TODO Should this object be moved outside the 'defaultConfig' function
+    // so as to make sure it is initialized only once?
     var defaultConfigValues = {
 
       /*
