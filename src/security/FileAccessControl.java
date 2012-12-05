@@ -23,6 +23,12 @@ public class FileAccessControl {
         }
     }
 
+    /**
+     * Decide whether access should be allowed to the desired file.
+     * 
+     * @param path      the desired file
+     * @return          a proper access status code (an integer)
+     */
     public int pathAccessStatus(String path) {
         URI u;
         try {
@@ -67,6 +73,9 @@ public class FileAccessControl {
         }
     }
     
+    /**
+     * The root directory to serve files from.
+     */
     private File rootDir;
     
     public static final int ACCESS_ALLOWED = 0;
