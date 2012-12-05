@@ -76,18 +76,19 @@ FimmWidgets.util = {};        // For utility functions.
     };
   })();
 
-  /*
-   * Functions 'loadDynamicFile', 'doLoading', and 'loadDynamically' are used to load
-   * JavaScript and CSS files dynamically. This saves the user from the trouble of 
-   * specifying the files by hand (and inserting the required code into the HTML page).
+  /***************************************************************************
+   * Functions 'loadDynamicFile', 'doLoading', and 'loadDynamically' are used 
+   * to load JavaScript and CSS files dynamically. This saves the user from 
+   * the trouble of specifying the files by hand (and inserting the required 
+   * code into the HTML page).
    *
-   * The function 'loadDynamically' sets the ball rolling; i.e. this function calls the
-   * other two functions. It is recommended that the other two functions are *not* 
-   * called externally.
+   * The function 'loadDynamically' sets the ball rolling; i.e. this function 
+   * calls the other two functions. It is recommended that the other two 
+   * functions are *not* called externally.
    *
-   * The functions 'loadDynamicFile' and 'doLoading' call each other in a circular
-   * fashion.
-   */
+   * The functions 'loadDynamicFile' and 'doLoading' call each other in a 
+   * circular fashion.
+   **************************************************************************/
 
   /**
    * Load the file at fileURL. (This variable is not used in this method, 
